@@ -1,0 +1,223 @@
+diff --git a/TODO.md b/TODO.md
+index 96537ef..a834173 100644
+--- a/TODO.md
++++ b/TODO.md
+@@ -10,12 +10,6 @@ make test-integration
+ -----------------------------------------------------------
+ -----------------------------------------------------------
+ 
+-make aws creds params optional (cloudwatch)
+-	- switch to **kwargs style?
+-
+------------------------------------------------------------
+------------------------------------------------------------
+-
+ bulk save
+ 	combine entries with same timestamp into single doctype
+ 
+diff --git a/systemdlogger/aws.py b/systemdlogger/aws.py
+index ddd9caa..bc93f19 100644
+--- a/systemdlogger/aws.py
++++ b/systemdlogger/aws.py
+@@ -12,16 +12,13 @@ class AWSLogger():
+         '/latest/dynamic/instance-identity/document'
+     )
+ 
+-    def __init__(self, aws_service, access_key, secret_key, region):
++    # def __init__(self, aws_service, access_key, secret_key, region):
++    def __init__(self, aws_service, aws_params={}):
+         if aws_service not in AWSLogger.services:
+             raise Exception('logger must be one of %s' % AWSLogger.services)
+         self.aws_service = aws_service
+         self.metadata = self.load_metadata()
+-        self.client = self.create_client(
+-            access_key=access_key,
+-            secret_key=secret_key,
+-            region=region
+-        )
++        self.client = self.create_client(**aws_params)
+ 
+     def create_client(self, access_key, secret_key, region):
+         if access_key and secret_key and region:
+diff --git a/systemdlogger/cloudwatch.py b/systemdlogger/cloudwatch.py
+index dd088de..0df7283 100755
+--- a/systemdlogger/cloudwatch.py
++++ b/systemdlogger/cloudwatch.py
+@@ -12,16 +12,9 @@ def __init__(
+         seq_tok_filename,
+         log_group_name,
+         log_stream_name,
+-        access_key,
+-        secret_key,
+-        region
++        aws_params={}
+     ):
+-        super().__init__(
+-            'cloudwatch',
+-            access_key,
+-            secret_key,
+-            region
+-        )
++        super().__init__('cloudwatch', aws_params)
+         self.setup_logs(seq_tok_filename, log_group_name, log_stream_name)
+ 
+     def setup_logs(self, seq_tok_filename, log_group_name, log_stream_name):
+diff --git a/tests/fixtures/config.json b/tests/fixtures/config.json
+index 762d14e..5cb4980 100644
+--- a/tests/fixtures/config.json
++++ b/tests/fixtures/config.json
+@@ -7,9 +7,11 @@
+             "log_group_name": "log_group_name",
+             "log_stream_name": "log_stream_name",
+             "seq_tok_filename": "cloudwatch_seq_tok-project-app.txt",
+-            "access_key": "access_key",
+-            "secret_key": "secret_key",
+-            "region": "region"
++            "aws_params": {
++                "access_key": "access_key",
++                "secret_key": "secret_key",
++                "region": "region"
++            }
+         },
+         "es": {
+             "doctype": "webserver",
+diff --git a/tests/test_aws.py b/tests/test_aws.py
+index 888971f..0c7b6fa 100644
+--- a/tests/test_aws.py
++++ b/tests/test_aws.py
+@@ -27,7 +27,7 @@ def metadata():
+ 
+ 
+ @pytest.mark.parametrize(('backend'), allowed_services)
+-class TestInit:
++class TestInitAWS:
+ 
+     def setup_method(self, method):
+         self.AWSLogger = AWSLogger
+@@ -38,12 +38,17 @@ def teardown_method(self, method):
+ 
+     def test_init_load_metadata(self, backend, aws_params):
+         with patch.object(self.AWSLogger, 'create_client') as create_client:
+-            aws = self.AWSLogger(backend, **aws_params)
++            aws = self.AWSLogger(backend, aws_params)
+             assert aws.aws_service == backend
+             create_client.assert_called_once_with(**aws_params)
+             assert self.AWSLogger.load_metadata.call_count == 1
+ 
++    def test_init_without_aws_params(self, backend):
++        with patch.object(self.AWSLogger, 'create_client'):
++            aws = self.AWSLogger(backend)
++            assert aws.aws_service == backend
++
+     def test_init_create_client(self, backend, aws_params, metadata):
+-        logger = self.AWSLogger(backend, **aws_params)
++        logger = self.AWSLogger(backend, aws_params)
+         assert isinstance(
+             logger.client, botocore.client.BaseClient)
+diff --git a/tests/test_cloudwatch.py b/tests/test_cloudwatch.py
+index 5d256c3..f079dd4 100644
+--- a/tests/test_cloudwatch.py
++++ b/tests/test_cloudwatch.py
+@@ -1,38 +1,56 @@
+-from pytest import fixture
+-from unittest.mock import patch
++# from pytest import fixture
++import pytest
++from unittest.mock import Mock
+ from systemdlogger.plugin import PluginBase
+ from systemdlogger.aws import AWSLogger
+ from systemdlogger.cloudwatch import CloudwatchLogger
+ 
+ 
+-@fixture
+-def init_params():
++def params():
+     return {
+         'log_group_name': 'log_group_name',
+         'log_stream_name': 'log_stream_name',
+         'seq_tok_filename': 'seq_tok_filename',
++    }
++
++
++def params_with_aws():
++    p = params()
++    p['aws_params'] = {
+         'access_key': '1234',
+         'secret_key': '567',
+         'region': 'eu-west-1'
+     }
++    return p
++
++
++@pytest.mark.parametrize(('init_params'), [
++    params(),
++    params_with_aws()
++])
++class TestInitCloudwatch:
++    def setup_method(self, method):
++        self.AWSLogger = AWSLogger
++        self.AWSLogger.__init__ = Mock()
++        self.CloudwatchLogger = CloudwatchLogger
++        self.CloudwatchLogger.setup_logs = Mock()
+ 
++    def teardown_method(self, method):
++        self.AWSLogger.__init__.restore()
++        self.CloudwatchLogger.setup_logs.restore()
+ 
+-def test_init(init_params):
+-    with patch.object(AWSLogger, '__init__') as init:
+-        with patch.object(CloudwatchLogger, 'setup_logs') as setup_logs:
+-            cloudwatch_logger = CloudwatchLogger(**init_params)
+-            assert issubclass(CloudwatchLogger, PluginBase)
+-            assert isinstance(cloudwatch_logger, PluginBase)
+-            assert issubclass(CloudwatchLogger, AWSLogger)
+-            assert isinstance(cloudwatch_logger, AWSLogger)
+-            init.assert_called_once_with(
+-                'cloudwatch',
+-                init_params['access_key'],
+-                init_params['secret_key'],
+-                init_params['region']
+-            )
+-            setup_logs.assert_called_once_with(
+-                init_params['seq_tok_filename'],
+-                init_params['log_group_name'],
+-                init_params['log_stream_name']
+-            )
++    def test_init(self, init_params):
++        cloudwatch_logger = CloudwatchLogger(**init_params)
++        assert issubclass(CloudwatchLogger, PluginBase)
++        assert isinstance(cloudwatch_logger, PluginBase)
++        assert issubclass(CloudwatchLogger, AWSLogger)
++        assert isinstance(cloudwatch_logger, AWSLogger)
++        self.AWSLogger.__init__.assert_called_once_with(
++            'cloudwatch',
++            init_params.get('aws_params', {})
++        )
++        self.CloudwatchLogger.setup_logs.assert_called_once_with(
++            init_params['seq_tok_filename'],
++            init_params['log_group_name'],
++            init_params['log_stream_name']
++        )
+diff --git a/tests/test_runner_integration.py b/tests/test_runner_integration.py
+index ee5276b..7c358bc 100644
+--- a/tests/test_runner_integration.py
++++ b/tests/test_runner_integration.py
+@@ -1,14 +1,12 @@
+-from pytest import fixture
++import pytest
+ from unittest.mock import patch
+ import tests.fixtures.journal as FakeJournalExporter
+ from systemdlogger.elasticsearch import ElasticsearchLogger
+ 
+ 
+-@fixture
+-def config_path():
+-    return 'tests/fixtures/config_es.json'
+-
+-
++@pytest.mark.parametrize(('config_path'), [
++    'tests/fixtures/config_es.json'
++])
+ class TestRunner:
+ 
+     def setup_method(self, method):
