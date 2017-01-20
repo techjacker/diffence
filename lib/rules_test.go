@@ -17,7 +17,7 @@ func Test_readRules(t *testing.T) {
 	}{
 		{
 			name: "Read rules from file",
-			args: args{filePath: "./../test/fixtures/rules.json"},
+			args: args{filePath: "./../test/fixtures/rules/rules.json"},
 			want: &[]rule{
 				{
 					Part:        "filename",
