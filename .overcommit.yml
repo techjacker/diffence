@@ -20,6 +20,9 @@ PreCommit:
     enabled: true
   GoLint:
     enabled: true
+  Generate:
+    enabled: true
+    required_executable: './bin/githooks/generate.sh'
   Interfacer:
     enabled: true
     required_executable: './bin/githooks/interfacer.sh'
