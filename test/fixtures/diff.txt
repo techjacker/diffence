@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index 82366e3..5fc99b9 100644
+--- a/README.md
++++ b/README.md
+@@ -1,7 +1,8 @@
+ # systemdlogger
+
+-- Exports systemd logs to an external service, eg cloudwatch, elasticsearch.
+-- Use with a cron job.
++- Lightweight, python only, logstash alternative
++- Exports systemd journald logs to an external service, eg cloudwatch, elasticsearch
++- Use with a cron job
+ - Python 3+
