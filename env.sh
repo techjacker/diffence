@@ -1,0 +1,2 @@
+RELEASE_VERSION="0.1.0"
+RELEASE_BUILD_PATH="./cmd/diffence"
