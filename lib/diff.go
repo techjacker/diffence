@@ -1,37 +1,44 @@
 package diffence
 
+import (
+	"bufio"
+	"io"
+)
+
 type diffItem struct {
-	rawText      string
-	filename     string
-	addedText    string
+	data         []byte
+	filename     []byte
+	addedText    []byte
 	match        bool
 	matchedRules []rule
 }
 
 // Differ creates diffItems from a raw git diff text input
 type Differ interface {
-	split(string) []string
-	parse([]string) []diffItem
-	Run() error
+	// split(string) []string
+	Parse(io.Reader) []diffItem
 }
 
 // NewDiffer is a Differ factory
-func NewDiffer(in string) Differ {
-	return &diff{rawText: in}
+func NewDiffer() Differ {
+	return &diff{}
 }
 
-type diff struct {
-	rawText string
-}
+type diff struct{}
 
-func (d diff) split(s string) []string {
-	return []string{}
-}
+func (d diff) Parse(r io.Reader) []diffItem {
 
-func (d diff) parse(sArr []string) []diffItem {
-	return []diffItem{}
-}
+	items := []diffItem{}
 
-func (d diff) Run() error {
-	return nil
+	// Default scanner is bufio.ScanLines. Lets use ScanWords.
+	// Could also use a custom function of SplitFunc type
+	scanner := bufio.NewScanner(r)
+	scanner.Split(bufio.ScanWords)
+
+	for scanner.Scan() {
+		word := scanner.Bytes()
+		items = append(items, diffItem{word})
+	}
+
+	return items
 }
