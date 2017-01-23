@@ -14,7 +14,11 @@ func TestNewDiffer(t *testing.T) {
 		args args
 		want *diff
 	}{
-	// TODO: Add test cases.
+		{
+			name: "no op test",
+			args: args{in: "test diff"},
+			want: &diff{rawText: "test diff"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

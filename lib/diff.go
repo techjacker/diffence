@@ -12,6 +12,7 @@ type diffItem struct {
 type Differ interface {
 	split(string) []string
 	parse([]string) []diffItem
+	Run() error
 }
 
 // NewDiffer is a Differ factory
@@ -29,4 +30,8 @@ func (d diff) split(s string) []string {
 
 func (d diff) parse(sArr []string) []diffItem {
 	return []diffItem{}
+}
+
+func (d diff) Run() error {
+	return nil
 }
