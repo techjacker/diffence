@@ -19,4 +19,8 @@ run:
 test:
 	@go test -v ./...
 
+test-race:
+	@go test -race ./...
+
+
 .PHONY: test run
