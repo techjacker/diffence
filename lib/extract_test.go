@@ -39,3 +39,23 @@ func Test_extractFileName(t *testing.T) {
 		})
 	}
 }
+
+func Test_extractAddedText(t *testing.T) {
+	type args struct {
+		in []byte
+	}
+	tests := []struct {
+		name string
+		args args
+		want []byte
+	}{
+	// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := extractAddedText(tt.args.in); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("extractAddedText() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
