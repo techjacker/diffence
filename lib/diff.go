@@ -7,9 +7,9 @@ import (
 
 // DiffItem is a diff struct for an inidividual file
 type DiffItem struct {
-	raw      []byte
-	filename []byte
-	// addedText    []byte
+	raw       []byte
+	filename  []byte
+	addedText []byte
 	// match        bool
 	// matchedRules []rule
 }
@@ -17,8 +17,9 @@ type DiffItem struct {
 // NewDiffItem is a DiffItem factory
 func NewDiffItem(raw []byte) DiffItem {
 	return DiffItem{
-		raw:      raw,
-		filename: []byte("README.md"),
+		raw:       raw,
+		filename:  extractFileName(raw),
+		addedText: extractAddedText(raw),
 	}
 }
 
