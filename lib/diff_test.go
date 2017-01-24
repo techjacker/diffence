@@ -1,10 +1,10 @@
 package diffence
 
 import (
-	"bytes"
 	"io"
 	"log"
 	"os"
+	"path"
 	"reflect"
 	"testing"
 )
@@ -28,6 +28,15 @@ func TestNewDiffer(t *testing.T) {
 	}
 }
 
+func getFixtureFile(filename string) io.Reader {
+	cwd, _ := os.Getwd()
+	file, err := os.Open(path.Join(cwd, "../", filename))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return file
+}
+
 func Test_diff_Parse(t *testing.T) {
 	type args struct {
 		r io.Reader
@@ -35,50 +44,28 @@ func Test_diff_Parse(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []diffItem
+		want []DiffItem
 	}{
 		{
 			name: "Differ.Parse()",
-			// args: args{r: getFixtureFile("test/fixtures/diffs/single.diff")},
-			args: args{r: bytes.NewReader(
-				[]byte(
-					"diff --git a/README.md b/README.md" +
-						"\n" +
-						"index 82366e3..5fc99b9 100644" +
-						"\n" +
-						"diff --git a/TODO.md b/TODO.md" +
-						"\n" +
-						"index 82366e3..5fc99b9 100644",
-				),
-			)},
-			want: []diffItem{
-				diffItem{[]byte(
-					"diff --git a/README.md b/README.md" +
-						"\n" +
-						"index 82366e3..5fc99b9 100644",
-				)},
-				diffItem{[]byte(
-					"diff --git a/TODO.md b/TODO.md" +
-						"\n" +
-						"index 82366e3..5fc99b9 100644",
-				)},
+			args: args{
+				r: getFixtureFile("test/fixtures/diffs/single.diff"),
+			},
+			want: []DiffItem{
+				DiffItem{
+					raw:      []byte{},
+					filename: []byte("README.md"),
+				},
 			},
 		},
 	}
-	for i, tt := range tests {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := diff{}
-			if got := d.Parse(tt.args.r); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("diff.Parse() \n\nGOT: %s, \n\nWANT: %s", got, tt.want)
+			d.Parse(tt.args.r)
+			if !reflect.DeepEqual(d.items[0].filename, tt.want[0].filename) {
+				t.Errorf("diff.Parse() \n\nGOT: %s, \n\nWANT: %s", d.items[0].filename, tt.want[0].filename)
 			}
 		})
 	}
-}
-
-func getFixtureFile(filename string) io.Reader {
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file
 }

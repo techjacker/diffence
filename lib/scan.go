@@ -19,7 +19,7 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	k, dataLen := 0, len(data)-1
 	for k < dataLen {
 		if i := bytes.IndexByte(data[k:], '\n'); i >= 0 {
-			if string(data[k+i+1]) == "d" {
+			if k+i+1 < dataLen && string(data[k+i+1]) == "d" {
 				return k + i + 1, dropCR(data[0 : k+i]), nil
 				// start at index after last \n char
 			}

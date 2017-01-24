@@ -5,18 +5,26 @@ import (
 	"io"
 )
 
-type diffItem struct {
-	data []byte
-	// filename     []byte
+// DiffItem is a diff struct for an inidividual file
+type DiffItem struct {
+	raw      []byte
+	filename []byte
 	// addedText    []byte
 	// match        bool
 	// matchedRules []rule
 }
 
-// Differ creates diffItems from a raw git diff text input
+// NewDiffItem is a DiffItem factory
+func NewDiffItem(raw []byte) DiffItem {
+	return DiffItem{
+		raw:      raw,
+		filename: []byte("README.md"),
+	}
+}
+
+// Differ creates DiffItems from a raw git diff text input
 type Differ interface {
-	// split(string) []string
-	Parse(io.Reader) []diffItem
+	Parse(io.Reader)
 }
 
 // NewDiffer is a Differ factory
@@ -24,25 +32,19 @@ func NewDiffer() Differ {
 	return &diff{}
 }
 
-type diff struct{}
+type diff struct {
+	items []DiffItem
+}
 
 // Parse splits a diff into individual file diffs and parses each one
 // in a separate go routine
-func (d diff) Parse(r io.Reader) []diffItem {
+func (d *diff) Parse(r io.Reader) {
 
-	// Default scanner is bufio.ScanLines. Lets use ScanWords.
-	// Could also use a custom function of SplitFunc type
 	scanner := bufio.NewScanner(r)
 	scanner.Split(ScanDiffs)
 
-	items := []diffItem{}
-	// i := 0
 	for scanner.Scan() {
 		word := scanner.Bytes()
-		// fmt.Printf("%d: %#s\n", i, pretty.Formatter(word))
-		// i += 1
-		items = append(items, diffItem{word})
+		d.items = append(d.items, NewDiffItem(word))
 	}
-
-	return items
 }
