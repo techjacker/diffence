@@ -21,14 +21,22 @@ func Test_extractFileName(t *testing.T) {
 				in: []byte(
 					"diff --git a/README.md b/README.md" +
 						"\n" +
-						"index 82366e3..5fc99b9 100644" +
-						"\n" +
-						"diff --git a/TODO.md b/TODO.md" +
-						"\n" +
 						"index 82366e3..5fc99b9 100644",
 				),
 			},
 			want: []byte("README.md"),
+		},
+		{
+
+			name: "ExtractFileName()",
+			args: args{
+				in: []byte(
+					"diff --git a/TODO.md b/TODO.md" +
+						"\n" +
+						"index 82366e3..5fc99b9 100644",
+				),
+			},
+			want: []byte("TODO.md"),
 		},
 	}
 	for _, tt := range tests {
