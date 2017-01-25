@@ -3,10 +3,7 @@ package diffence
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
-	"log"
-	"os"
 )
 
 // DiffItem is a diff struct for an inidividual file
@@ -58,10 +55,5 @@ func (d *diff) Parse(r io.Reader) error {
 		d.items = append(d.items, NewDiffItem(buffer.Bytes()))
 	}
 
-	err := scanner.Err()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "reading input:", err)
-		log.Fatal(err)
-	}
-	return err
+	return scanner.Err()
 }
