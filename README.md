@@ -1,6 +1,6 @@
 # diffence
 
-Checks a diff for offensive content.
+Checks a git diff for offensive content.
 
 -----------------------------------------------------------
 
