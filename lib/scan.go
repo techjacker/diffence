@@ -16,7 +16,7 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		return 0, nil, nil
 	}
 
-	k, dataLen := 0, len(data)-1
+	k, nextFileDiffIndex, dataLen := 0, 0, len(data)-1
 	for k < dataLen {
 		if i := bytes.IndexByte(data[k:], '\n'); i >= 0 {
 			// how far advanced already (k)
