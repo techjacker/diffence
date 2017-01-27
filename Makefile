@@ -6,6 +6,12 @@ RULES_DIR = test/fixtures/rules
 RULES_URL = https://raw.githubusercontent.com/michenriksen/gitrob/master/signatures.json
 
 
+lint:
+	@golint ./...
+	@go vet ./...
+	@interfacer $(go list ./... | grep -v /vendor/)
+
+
 rules:
 	@curl -s $(RULES_URL) > $(RULES_DIR)/gitrob.json
 

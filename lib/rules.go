@@ -5,11 +5,6 @@ import (
 	"os"
 )
 
-type ruleRunner interface {
-	readRules(jsonFilePath string) (*[]rule, error)
-	runRules(inputText string) []diff
-}
-
 func readRulesFromFile(filePath string) (*[]rule, error) {
 	rules := &[]rule{}
 

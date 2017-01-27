@@ -7,6 +7,8 @@ import (
 )
 
 func main() {
-	d := df.NewDiffer()
-	d.Parse(bytes.NewReader([]byte("hello world")))
+	r := bytes.NewReader([]byte("hello world"))
+	items, err := df.SplitDiffs(r)
+	println("items", items)
+	println("err", err)
 }
