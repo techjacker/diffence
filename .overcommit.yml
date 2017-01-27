@@ -18,8 +18,11 @@
 PreCommit:
   GoVet:
     enabled: true
-  GoLint:
+  # GoLint:
+  #   enabled: true
+  Lint:
     enabled: true
+    required_executable: './bin/githooks/lint.sh'
   Generate:
     enabled: true
     required_executable: './bin/githooks/generate.sh'
