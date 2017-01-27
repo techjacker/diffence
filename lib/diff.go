@@ -17,14 +17,9 @@ func (d *DiffItem) getHeader() string {
 	return d.raw[:newLineIndex]
 }
 
-// func (d *DiffItem) getFilename() []byte {
-// 	// prefix := []byte("diff --git a/")
-// 	// firstLine := bytes.SplitN(in, []byte)
-// 	newLineIndex := bytes.IndexByte(d.raw, '\n')
-// 	indexfilePrefix := bytes.LastIndexFunc(
-// 		d.raw[0:newLineIndex],
-// 		unicode.IsSpace,
-// 	)
-// 	prefix := d.raw[indexfilePrefix+1 : newLineIndex]
-// 	return bytes.TrimPrefix(prefix, []byte("b/"))
-// }
+func (d *DiffItem) getFilename() string {
+	prefix := "b/"
+	pathBIndex := strings.Index(d.raw, prefix)
+	newLineIndex := strings.Index(d.raw, "\n")
+	return d.raw[pathBIndex+len(prefix) : newLineIndex]
+}

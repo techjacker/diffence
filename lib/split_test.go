@@ -4,9 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"io"
-	"log"
-	"os"
-	"path"
 	"reflect"
 	"testing"
 )
@@ -62,37 +59,25 @@ func TestScanDiffsWithBufioScanner(t *testing.T) {
 	}
 }
 
-func getFixtureFile(filename string) io.Reader {
-	cwd, _ := os.Getwd()
-	file, err := os.Open(path.Join(cwd, "../", filename))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return file
-}
-
 func Test_diff_Parse(t *testing.T) {
 	type args struct {
 		r io.Reader
 	}
-	type want struct {
-		header   string
-		filename []byte
-	}
+
 	tests := []struct {
 		name string
 		args args
-		want []want
+		want []wantDiff
 	}{
 		{
 			name: "Differ.Parse()",
 			args: args{
 				r: getFixtureFile("test/fixtures/diffs/single.diff"),
 			},
-			want: []want{
-				want{
+			want: []wantDiff{
+				wantDiff{
 					header:   "diff --git a/README.md b/README.md",
-					filename: []byte("README.md"),
+					filename: "README.md",
 				},
 			},
 		},
@@ -101,34 +86,34 @@ func Test_diff_Parse(t *testing.T) {
 			args: args{
 				r: getFixtureFile("test/fixtures/diffs/multi.diff"),
 			},
-			want: []want{
-				want{
+			want: []wantDiff{
+				wantDiff{
 					header:   "diff --git a/TODO.md b/TODO.md",
-					filename: []byte("TODO.md"),
+					filename: "TODO.md",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/systemdlogger/aws.py b/systemdlogger/aws.py",
-					filename: []byte("systemdlogger/aws.py"),
+					filename: "systemdlogger/aws.py",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/systemdlogger/cloudwatch.py b/systemdlogger/cloudwatch.py",
-					filename: []byte("systemdlogger/cloudwatch.py"),
+					filename: "systemdlogger/cloudwatch.py",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/tests/fixtures/config.json b/tests/fixtures/config.json",
-					filename: []byte("tests/fixtures/config.json"),
+					filename: "tests/fixtures/config.json",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/tests/test_aws.py b/tests/test_aws.py",
-					filename: []byte("tests/test_aws.py"),
+					filename: "tests/test_aws.py",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/tests/test_cloudwatch.py b/tests/test_cloudwatch.py",
-					filename: []byte("tests/test_cloudwatch.py"),
+					filename: "tests/test_cloudwatch.py",
 				},
-				want{
+				wantDiff{
 					header:   "diff --git a/tests/test_runner_integration.py b/tests/test_runner_integration.py",
-					filename: []byte("tests/test_runner_integration.py"),
+					filename: "tests/test_runner_integration.py",
 				},
 			},
 		},
@@ -144,10 +129,8 @@ func Test_diff_Parse(t *testing.T) {
 
 			// check extracting metadata
 			for i, di := range items {
-				if tt.want[i].header != di.getHeader() {
-					t.Errorf("SplitDiffs() item:%d \nWANT: %s\nGOT: %s", i, tt.want[i].header, di.getHeader())
-					t.Fatalf("Body:\n\n%s", di.raw)
-				}
+				equals(t, di.getHeader(), tt.want[i].header)
+				equals(t, di.getFilename(), tt.want[i].filename)
 			}
 		})
 	}

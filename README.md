@@ -21,6 +21,12 @@ go get -u github.com/techjacker/diffence/cmd/diffence
 ```
 ```
 
+-----------------------------------------------------------
+## [Gitrob Rules - Signature Keys](https://github.com/michenriksen/gitrob#signature-keys)
+
+
+
+
 
 -----------------------------------------------------------
 ## JSON Configuration

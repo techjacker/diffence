@@ -1,22 +1,20 @@
 package diffence
 
-import (
-	"reflect"
-	"testing"
-)
+import "testing"
+
+type wantDiff struct {
+	header   string
+	filename string
+}
 
 func Test_extractFileName(t *testing.T) {
 	type args struct {
 		in string
 	}
-	type want struct {
-		header   string
-		filename string
-	}
 	tests := []struct {
 		name string
 		args args
-		want want
+		want wantDiff
 	}{
 		{
 			name: "diff.getHeader()",
@@ -25,7 +23,7 @@ func Test_extractFileName(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want: want{
+			want: wantDiff{
 				header:   "diff --git a/README.md b/README.md",
 				filename: "README.md",
 			},
@@ -37,7 +35,7 @@ func Test_extractFileName(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want: want{
+			want: wantDiff{
 				header:   "diff --git a/TODO.md b/TODO.md",
 				filename: "TODO.md",
 			},
@@ -46,9 +44,8 @@ func Test_extractFileName(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := DiffItem{tt.args.in}
-			if got := d.getHeader(); !reflect.DeepEqual(got, tt.want.header) {
-				t.Errorf("d.getHeader()\nGOT:%s\nWANT:%s", got, tt.want.header)
-			}
+			equals(t, d.getHeader(), tt.want.header)
+			equals(t, d.getFilename(), tt.want.filename)
 		})
 	}
 }
