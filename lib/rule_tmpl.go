@@ -1,6 +1,7 @@
 package diffence
 
 import (
+	"path"
 	"regexp"
 	"strings"
 )
@@ -13,39 +14,25 @@ import (
 const (
 	// RuleTypeRegex is the regex type for pattern matching
 	RuleTypeRegex = "regex"
-	// regex: Regular expression matching of part and pattern
-	// https://golang.org/pkg/regexp/#Regexp.FindAllString
-	// re := regexp.MustCompile("a.")
-	// fmt.Println(re.FindAllString("paranormal", -1))
-	// matched, err := regexp.MatchString("foo.*", "seafood")
-	// fmt.Println(matched, err)
 
 	// RuleTypeMatch is the string match type for pattern matching
 	RuleTypeMatch = "match"
-	// match: Simple match of part and pattern
-	// strings.Contains("seafood", "foo")
-	// https://golang.org/pkg/regexp/#Regexp.MatchString
-	// https://golang.org/pkg/regexp/#Regexp.Match
 )
 
 const (
-	// RulePartPath checks the path of the file
+	// RulePartPath checks the whole path of the file
 	RulePartPath = "path"
-	// complete file path
-	// Only the file extension
 
 	// RulePartFilename checks the name of the file
 	RulePartFilename = "filename"
-	// Only the filename
-	// path.Base()
 
 	// RulePartExtension checks the extension of the file
 	RulePartExtension = "extension"
-	// path.Ext()
 )
 
 // Run runs rules against input strings
 func (r *rule) Run(in string) bool {
+	in = r.extractPart(in)
 	switch r.Type {
 	case RuleTypeRegex:
 		reg := regexp.MustCompile(r.Pattern)
@@ -54,4 +41,14 @@ func (r *rule) Run(in string) bool {
 		return strings.Contains(in, r.Pattern)
 	}
 	return false
+}
+
+func (r *rule) extractPart(in string) string {
+	switch r.Part {
+	case RulePartFilename:
+		return path.Base(in)
+	case RulePartExtension:
+		return path.Ext(in)
+	}
+	return in
 }
