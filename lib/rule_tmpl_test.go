@@ -2,7 +2,7 @@ package diffence
 
 import "testing"
 
-func Test_rule_Run(t *testing.T) {
+func Test_rule_Match(t *testing.T) {
 	type fields struct {
 		Caption     string
 		Description interface{}
@@ -101,8 +101,8 @@ func Test_rule_Run(t *testing.T) {
 				Pattern:     tt.fields.Pattern,
 				Type:        tt.fields.Type,
 			}
-			if got := r.Run(tt.args.in); got != tt.want {
-				t.Errorf("rule.Run() = %v, want %v", got, tt.want)
+			if got := r.Match(tt.args.in); got != tt.want {
+				t.Errorf("rule.Match() = %v, want %v", got, tt.want)
 			}
 		})
 	}

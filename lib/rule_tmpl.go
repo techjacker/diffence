@@ -30,8 +30,8 @@ const (
 	RulePartExtension = "extension"
 )
 
-// Run runs rules against input strings
-func (r *rule) Run(in string) bool {
+// Match runs rules against input strings
+func (r *rule) Match(in string) bool {
 	in = r.extractPart(in)
 	switch r.Type {
 	case RuleTypeRegex:
