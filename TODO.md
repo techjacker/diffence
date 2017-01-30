@@ -1,6 +1,3 @@
-d.getFilename() -> getPath()
-	- move out of struct into separate function
-
 -----------------------------------------------------------
 Add test coverage to Makefile
 
