@@ -3,7 +3,6 @@ package diffence
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -13,11 +12,7 @@ import (
 )
 
 func getFixtureFile(filename string) io.Reader {
-	cwd, _ := os.Getwd()
-	file, err := os.Open(path.Join(cwd, "../", filename))
-	if err != nil {
-		log.Fatal(err)
-	}
+	file, _ := os.Open(path.Join("../", filename))
 	return file
 }
 

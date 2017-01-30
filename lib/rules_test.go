@@ -20,11 +20,11 @@ func Test_readRules(t *testing.T) {
 			args: args{filePath: "./../test/fixtures/rules/rules.json"},
 			want: &[]rule{
 				{
-					Part:        "filename",
-					Type:        "regex",
-					Pattern:     "password",
 					Caption:     "Contains word: password",
 					Description: nil,
+					Part:        "filename",
+					Pattern:     "password",
+					Type:        "regex",
 				},
 			},
 			wantErr: false,

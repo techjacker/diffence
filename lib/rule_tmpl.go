@@ -1,7 +1,6 @@
 package diffence
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
@@ -45,44 +44,14 @@ const (
 	// path.Ext()
 )
 
-// RuleResult returns the result of the pattern matching
-type RuleResult struct {
-	Matched bool
-	Err     error
-}
-
-//////////////
-// pattern: (match = string)
-// regular expression to match with
-//////////////
-func (r *rule) Run(in string) RuleResult {
+// Run runs rules against input strings
+func (r *rule) Run(in string) bool {
 	switch r.Type {
 	case RuleTypeRegex:
-		return r.runRegex(in)
+		reg := regexp.MustCompile(r.Pattern)
+		return reg.MatchString(in)
 	case RuleTypeMatch:
-		return r.runMatch(in)
+		return strings.Contains(in, r.Pattern)
 	}
-	return RuleResult{
-		Matched: false,
-		Err:     fmt.Errorf("Unrecognised rule type: %s", r.Type),
-	}
-}
-
-func (r *rule) runRegex(in string) RuleResult {
-	var matched bool
-	reg, err := regexp.Compile(r.Pattern)
-	if err != nil {
-		matched = reg.MatchString(in)
-	}
-	return RuleResult{
-		Matched: matched,
-		Err:     err,
-	}
-}
-
-func (r *rule) runMatch(in string) RuleResult {
-	return RuleResult{
-		Matched: strings.Contains(in, r.Pattern),
-		Err:     nil,
-	}
+	return false
 }
