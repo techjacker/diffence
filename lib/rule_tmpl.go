@@ -11,36 +11,41 @@ import (
 ////////////////////////////////////////////////////////
 // https://github.com/michenriksen/gitrob#signature-keys
 ////////////////////////////////////////////////////////
-type RuleType string
-
 const (
+	// RuleTypeRegex is the regex type for pattern matching
+	RuleTypeRegex = "regex"
 	// regex: Regular expression matching of part and pattern
 	// https://golang.org/pkg/regexp/#Regexp.FindAllString
 	// re := regexp.MustCompile("a.")
 	// fmt.Println(re.FindAllString("paranormal", -1))
 	// matched, err := regexp.MatchString("foo.*", "seafood")
 	// fmt.Println(matched, err)
-	REGEX RuleType = "regex"
+
+	// RuleTypeMatch is the string match type for pattern matching
+	RuleTypeMatch = "match"
 	// match: Simple match of part and pattern
 	// strings.Contains("seafood", "foo")
 	// https://golang.org/pkg/regexp/#Regexp.MatchString
 	// https://golang.org/pkg/regexp/#Regexp.Match
-	MATCH RuleType = "match"
 )
-
-type RulePart string
 
 const (
+	// RulePartPath checks the path of the file
+	RulePartPath = "path"
 	// complete file path
-	PATH RulePart = "part"
+	// Only the file extension
+
+	// RulePartFilename checks the name of the file
+	RulePartFilename = "filename"
 	// Only the filename
 	// path.Base()
-	FILENAME = "filename"
-	// Only the file extension
+
+	// RulePartExtension checks the extension of the file
+	RulePartExtension = "extension"
 	// path.Ext()
-	EXTENSION = "extension"
 )
 
+// RuleResult returns the result of the pattern matching
 type RuleResult struct {
 	Matched bool
 	Err     error
@@ -52,9 +57,9 @@ type RuleResult struct {
 //////////////
 func (r *rule) Run(in string) RuleResult {
 	switch r.Type {
-	case REGEX:
+	case RuleTypeRegex:
 		return r.runRegex(in)
-	case MATCH:
+	case RuleTypeMatch:
 		return r.runMatch(in)
 	}
 	return RuleResult{
@@ -64,9 +69,11 @@ func (r *rule) Run(in string) RuleResult {
 }
 
 func (r *rule) runRegex(in string) RuleResult {
-	reg := regexp.MustCompile(r.Pattern)
-	matched, err := reg.MatchString(in)
-
+	var matched bool
+	reg, err := regexp.Compile(r.Pattern)
+	if err != nil {
+		matched = reg.MatchString(in)
+	}
 	return RuleResult{
 		Matched: matched,
 		Err:     err,
@@ -76,6 +83,6 @@ func (r *rule) runRegex(in string) RuleResult {
 func (r *rule) runMatch(in string) RuleResult {
 	return RuleResult{
 		Matched: strings.Contains(in, r.Pattern),
-		Err:     err,
+		Err:     nil,
 	}
 }

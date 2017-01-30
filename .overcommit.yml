@@ -18,6 +18,10 @@
 PreCommit:
   GoVet:
     enabled: true
+  Test:
+    enabled: true
+    required_executable: './bin/githooks/test.sh'
+  # disabled because returns false positives -> replaced with shell script below
   # GoLint:
   #   enabled: true
   Lint:
