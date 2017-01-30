@@ -1,18 +1,11 @@
-Convert extract to lexer
-	- make accept io.Reader (not bytes as arg)
 
-Add more tests
-	- extract_test (/lexer_test)
-		- filename
-		- addedText
-	- diff_test
-		- multi diff test expectations
-		- add more diff fixture files
+
+d.getFilename() -> getPath()
+	- move out of struct into separate function
+
+
 
 -----------------------------------------------------------
-Make rules struct private
-	- add getter for channels to access
-
 Add concurrency
 	- each NewDiffItem = new go routine
 	- buffer to max 100?
