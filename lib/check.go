@@ -1,6 +1,10 @@
 package diffence
 
-import "io"
+import (
+	"io"
+
+	"github.com/y0ssar1an/q"
+)
 
 // Results is hash of results matched for each filepath in a git diff
 // [filepath] => rule{rule1, rule2}
@@ -11,7 +15,9 @@ type Results map[string][]rule
 func CheckDiffs(r io.Reader, rules *[]rule) (Results, error) {
 	res := Results{}
 	diffs, err := SplitDiffs(r)
-	if err != nil {
+	q.Q(len(diffs))
+	q.Q(err)
+	if err != nil || len(diffs) < 1 {
 		return res, err
 	}
 

@@ -77,7 +77,7 @@ func TestSplitDiffs(t *testing.T) {
 			want: []wantDiff{
 				wantDiff{
 					header:   "diff --git a/README.md b/README.md",
-					filename: "README.md",
+					filepath: "README.md",
 				},
 			},
 		},
@@ -89,31 +89,31 @@ func TestSplitDiffs(t *testing.T) {
 			want: []wantDiff{
 				wantDiff{
 					header:   "diff --git a/TODO.md b/TODO.md",
-					filename: "TODO.md",
+					filepath: "TODO.md",
 				},
 				wantDiff{
 					header:   "diff --git a/systemdlogger/aws.py b/systemdlogger/aws.py",
-					filename: "systemdlogger/aws.py",
+					filepath: "systemdlogger/aws.py",
 				},
 				wantDiff{
 					header:   "diff --git a/systemdlogger/cloudwatch.py b/systemdlogger/cloudwatch.py",
-					filename: "systemdlogger/cloudwatch.py",
+					filepath: "systemdlogger/cloudwatch.py",
 				},
 				wantDiff{
 					header:   "diff --git a/tests/fixtures/config.json b/tests/fixtures/config.json",
-					filename: "tests/fixtures/config.json",
+					filepath: "tests/fixtures/config.json",
 				},
 				wantDiff{
 					header:   "diff --git a/tests/test_aws.py b/tests/test_aws.py",
-					filename: "tests/test_aws.py",
+					filepath: "tests/test_aws.py",
 				},
 				wantDiff{
 					header:   "diff --git a/tests/test_cloudwatch.py b/tests/test_cloudwatch.py",
-					filename: "tests/test_cloudwatch.py",
+					filepath: "tests/test_cloudwatch.py",
 				},
 				wantDiff{
 					header:   "diff --git a/tests/test_runner_integration.py b/tests/test_runner_integration.py",
-					filename: "tests/test_runner_integration.py",
+					filepath: "tests/test_runner_integration.py",
 				},
 			},
 		},
@@ -129,8 +129,9 @@ func TestSplitDiffs(t *testing.T) {
 
 			// check extracting metadata
 			for i, di := range items {
-				equals(t, extractHeader(di.raw), tt.want[i].header)
-				equals(t, di.filePath, tt.want[i].filename)
+				header, _ := extractHeader(di.raw)
+				equals(t, header, tt.want[i].header)
+				equals(t, di.filePath, tt.want[i].filepath)
 			}
 		})
 	}
@@ -138,7 +139,12 @@ func TestSplitDiffs(t *testing.T) {
 
 type wantDiff struct {
 	header   string
-	filename string
+	filepath string
+}
+
+type wantErr struct {
+	header   bool
+	filepath bool
 }
 
 func Test_extract(t *testing.T) {
@@ -146,9 +152,10 @@ func Test_extract(t *testing.T) {
 		in string
 	}
 	tests := []struct {
-		name string
-		args args
-		want wantDiff
+		name    string
+		args    args
+		want    wantDiff
+		wantErr wantErr
 	}{
 		{
 			name: "diff.getHeader()",
@@ -159,8 +166,9 @@ func Test_extract(t *testing.T) {
 			},
 			want: wantDiff{
 				header:   "diff --git a/README.md b/README.md",
-				filename: "README.md",
+				filepath: "README.md",
 			},
+			wantErr: wantErr{false, false},
 		},
 		{
 			name: "diff.getHeader()",
@@ -171,14 +179,30 @@ func Test_extract(t *testing.T) {
 			},
 			want: wantDiff{
 				header:   "diff --git a/TODO.md b/TODO.md",
-				filename: "TODO.md",
+				filepath: "TODO.md",
 			},
+			wantErr: wantErr{false, false},
+		},
+		{
+			name: "diff.getHeader()",
+			args: args{
+				in: "hello world",
+			},
+			want: wantDiff{
+				header:   "",
+				filepath: "",
+			},
+			wantErr: wantErr{true, true},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			equals(t, extractHeader(tt.args.in), tt.want.header)
-			equals(t, extractFilePath(tt.args.in), tt.want.filename)
+			header, errHeader := extractHeader(tt.args.in)
+			equals(t, errHeader != nil, tt.wantErr.header)
+			equals(t, header, tt.want.header)
+			filepath, errFilepath := extractFilePath(tt.args.in)
+			equals(t, errFilepath != nil, tt.wantErr.filepath)
+			equals(t, filepath, tt.want.filepath)
 		})
 	}
 }

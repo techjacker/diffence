@@ -1,6 +1,7 @@
 package diffence
 
 import (
+	"bytes"
 	"io"
 	"reflect"
 	"testing"
@@ -54,6 +55,15 @@ func TestCheckDiffs(t *testing.T) {
 				"another/file/aws.pem": []rule{(*ruleMulti)[1]},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Recognises non diff text",
+			args: args{
+				r:     bytes.NewReader([]byte("not a diff")),
+				rules: ruleMulti,
+			},
+			want:    Results{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {

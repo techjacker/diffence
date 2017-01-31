@@ -20,7 +20,7 @@ func getFixtureFile(filename string) io.Reader {
 }
 
 func getRuleFile(filename string) *[]rule {
-	rules, err := readRulesFromFile(path.Join("../", filename))
+	rules, err := ReadRulesFromFile(path.Join("../", filename))
 	if err != nil {
 		panic(err)
 	}

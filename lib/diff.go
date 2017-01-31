@@ -3,6 +3,7 @@ package diffence
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
 )
@@ -20,6 +21,7 @@ type DiffItem struct {
 // file changed
 func SplitDiffs(r io.Reader) ([]DiffItem, error) {
 
+	var err error
 	scanner := bufio.NewScanner(r)
 	scanner.Split(ScanDiffs)
 
@@ -31,11 +33,20 @@ func SplitDiffs(r io.Reader) ([]DiffItem, error) {
 
 	for scanner.Scan() {
 		buffer.Write(scanner.Bytes())
+		raw := buffer.String()
+		filePath, err := extractFilePath(raw)
+		if err != nil {
+			return items, err
+		}
 		items = append(items, DiffItem{
-			raw:      buffer.String(),
-			filePath: extractFilePath(buffer.String()),
+			raw:      raw,
+			filePath: filePath,
 		})
 		buffer.Reset()
+	}
+
+	if err != nil {
+		return items, err
 	}
 
 	return items, scanner.Err()
@@ -70,16 +81,22 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	return 0, nil, nil
 }
 
-func extractHeader(in string) string {
+func extractHeader(in string) (string, error) {
 	newLineIndex := strings.Index(in, "\n")
-	return in[:newLineIndex]
+	if newLineIndex < 0 {
+		return "", fmt.Errorf("not valid diff content:\n\n%s", in)
+	}
+	return in[:newLineIndex], nil
 }
 
-func extractFilePath(in string) string {
+func extractFilePath(in string) (string, error) {
 	prefix := "b/"
 	pathBIndex := strings.Index(in, prefix)
 	newLineIndex := strings.Index(in, "\n")
-	return in[pathBIndex+len(prefix) : newLineIndex]
+	if pathBIndex >= 0 && newLineIndex > pathBIndex {
+		return in[pathBIndex+len(prefix) : newLineIndex], nil
+	}
+	return "", fmt.Errorf("not valid diff content:\n\n%s", in)
 }
 
 // dropCR drops a terminal \r from the data.

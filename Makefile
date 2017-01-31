@@ -25,6 +25,9 @@ run:
 test:
 	@go test ./lib/...
 
+test-cover:
+	@go test -cover ./lib/...
+
 test-race:
 	@go test -race ./lib/...
 

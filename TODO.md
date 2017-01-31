@@ -1,6 +1,10 @@
------------------------------------------------------------
-Add test coverage to Makefile
 
+export rule
+	-> rename to Rule
+	- re-enable lint githook
+
+-----------------------------------------------------------
+-----------------------------------------------------------
 -----------------------------------------------------------
 Add benchmarking
 
@@ -12,7 +16,7 @@ Add concurrency
 
 -----------------------------------------------------------
 Perf
-	- replace map with arrays for diffs + rules
+	- replace map with arrays (not slices) for diffs + rules
 	- move SplitDiffs() into check()
 
 
