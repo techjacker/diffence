@@ -20,7 +20,7 @@ diff:
 		-H "Accept: application/vnd.github.VERSION.diff"
 
 run:
-	@go build ./cmd/diffence && ./diffence
+	@go build -race ./cmd/diffence && ./diffence
 
 test:
 	@go test ./lib/...
