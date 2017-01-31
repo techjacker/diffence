@@ -11,6 +11,10 @@ func TestCheckDiffs(t *testing.T) {
 		r     io.Reader
 		rules *[]rule
 	}
+
+	ruleSingle := getRuleFile("test/fixtures/rules/rules.json")
+	ruleMulti := getRuleFile("test/fixtures/rules/rules_multi.json")
+
 	tests := []struct {
 		name    string
 		args    args
@@ -20,23 +24,34 @@ func TestCheckDiffs(t *testing.T) {
 		{
 			name: "Recognises an offensive diff",
 			args: args{
-				r: getFixtureFile("test/fixtures/diffs/single_fail.diff"),
-				rules: &[]rule{
-					rule{Caption: "Contains word: password",
-						Description: nil,
-						Part:        "filename",
-						Pattern:     "password",
-						Type:        "regex"},
-				},
+				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
+				rules: ruleSingle,
 			},
 			want: Results{
-				"path/to/password.txt": []rule{
-					rule{Caption: "Contains word: password",
-						Description: nil,
-						Part:        "filename",
-						Pattern:     "password",
-						Type:        "regex"},
-				},
+				"path/to/password.txt": *ruleSingle,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Recognises an offensive diff",
+			args: args{
+				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
+				rules: ruleMulti,
+			},
+			want: Results{
+				"path/to/password.txt": *ruleSingle,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Recognises an offensive diff",
+			args: args{
+				r:     getFixtureFile("test/fixtures/diffs/multi_fail.diff"),
+				rules: ruleMulti,
+			},
+			want: Results{
+				"path/to/password.txt": []rule{(*ruleMulti)[0]},
+				"another/file/aws.pem": []rule{(*ruleMulti)[1]},
 			},
 			wantErr: false,
 		},

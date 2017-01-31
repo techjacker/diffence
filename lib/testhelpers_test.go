@@ -12,8 +12,19 @@ import (
 )
 
 func getFixtureFile(filename string) io.Reader {
-	file, _ := os.Open(path.Join("../", filename))
+	file, err := os.Open(path.Join("../", filename))
+	if err != nil {
+		panic(err)
+	}
 	return file
+}
+
+func getRuleFile(filename string) *[]rule {
+	rules, err := readRulesFromFile(path.Join("../", filename))
+	if err != nil {
+		panic(err)
+	}
+	return rules
 }
 
 // assert fails the test if the condition is false.

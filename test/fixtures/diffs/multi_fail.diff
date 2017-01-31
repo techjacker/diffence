@@ -1,0 +1,12 @@
+diff --git a/path/to/password.txt b/path/to/password.txt
+index 82366e3..5fc99b9 100644
+--- a/password.txt
++++ b/password.txt
+@@ -0,0 +1 @@
++illegal
+diff --git a/another/file/aws.pem b/another/file/aws.pem
+index 82366e3..5fc99b9 100644
+--- a/password.txt
++++ b/password.txt
+@@ -0,0 +1 @@
++sdfsdf23432fdsfds325df822922dfwsdfdsf9234324234ffsd344234234

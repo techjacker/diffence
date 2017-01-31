@@ -1,0 +1,13 @@
+[{
+	"part": "filename",
+	"type": "regex",
+	"pattern": "password",
+	"caption": "Contains word: password",
+	"description": null
+}, {
+	"part": "extension",
+	"type": "match",
+	"pattern": "pem",
+	"caption": "Potential cryptographic private key",
+	"description": null
+}]
