@@ -6,7 +6,7 @@ import "io"
 // [filepath] => rule{rule1, rule2}
 type Results map[string][]rule
 
-// CheckDiffs is a clean syntax, low memory efficient way of
+// CheckDiffs is a clean syntax, inefficient way of
 // finding diffs that match the supplied rules
 func CheckDiffs(r io.Reader, rules *[]rule) (Results, error) {
 	res := Results{}

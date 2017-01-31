@@ -10,7 +10,10 @@ Add concurrency
 	- buffer to max 100?
 		- run benchmark tests (add to tests + makefile)
 
-
+-----------------------------------------------------------
+Perf
+	- replace map with arrays for diffs + rules
+	- move SplitDiffs() into check()
 
 
 
