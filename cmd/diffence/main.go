@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/kr/pretty"
-	df "github.com/techjacker/diffence/lib"
+	df "github.com/techjacker/diffence"
 )
 
 func main() {

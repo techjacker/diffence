@@ -12,10 +12,16 @@ Golang 1.7+
 [Download](../../releases) the latest stable release.
 
 ### Source
+
+##### CLI tool
 ```
 go get -u github.com/techjacker/diffence/cmd/diffence
 ```
 
+##### Library
+```
+go get -u github.com/techjacker/diffence
+```
 
 -----------------------------------------------------------
 
@@ -80,7 +86,7 @@ go install ./cmd/diffence && diffence -config ./test/fixtures/config.json
 OR
 
 ```shell
-go build ./cmd/diffence && ./diffence -config ./test/fixtures/config.json
+go build -race ./cmd/diffence && ./diffence -config ./test/fixtures/config.json
 ```
 
 

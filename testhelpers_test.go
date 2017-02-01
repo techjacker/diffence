@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path"
 	"path/filepath"
 	"reflect"
 	"runtime"
@@ -12,7 +11,7 @@ import (
 )
 
 func getFixtureFile(filename string) io.Reader {
-	file, err := os.Open(path.Join("../", filename))
+	file, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +19,7 @@ func getFixtureFile(filename string) io.Reader {
 }
 
 func getRuleFile(filename string) *[]rule {
-	rules, err := ReadRulesFromFile(path.Join("../", filename))
+	rules, err := ReadRulesFromFile(filename)
 	if err != nil {
 		panic(err)
 	}
