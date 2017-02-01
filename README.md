@@ -2,6 +2,8 @@
 
 Checks a git diff for offensive content.
 
+Golang 1.7+
+
 -----------------------------------------------------------
 
 ## Install CLI tool

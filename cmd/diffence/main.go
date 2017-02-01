@@ -14,14 +14,14 @@ func main() {
 
 	rules, err := df.ReadRulesFromFile("test/fixtures/rules/gitrob.json")
 	if err != nil {
-		fmt.Printf("\nCannot read rule file:\n%s\n", err)
+		fmt.Printf("\nCannot read rule file: %s\n", err)
 		os.Exit(1)
 		return
 	}
 
 	res, err := df.CheckDiffs(r, rules)
 	if err != nil {
-		fmt.Printf("\nError reading diff:\n%s\n", err)
+		fmt.Printf("\nError reading diff\n%s\n", err)
 		os.Exit(1)
 		return
 	}

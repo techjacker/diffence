@@ -96,7 +96,7 @@ func extractFilePath(in string) (string, error) {
 	if pathBIndex >= 0 && newLineIndex > pathBIndex {
 		return in[pathBIndex+len(prefix) : newLineIndex], nil
 	}
-	return "", fmt.Errorf("not valid diff content:\n\n%s", in)
+	return "", fmt.Errorf("Not valid diff content:\n%s", in)
 }
 
 // dropCR drops a terminal \r from the data.

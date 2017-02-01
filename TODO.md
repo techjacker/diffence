@@ -1,7 +1,10 @@
 
 export rule
 	-> rename to Rule
-	- re-enable lint githook
+	- re-enable lint githook (disable for that file)
+	- pull request gojson lib - add description flag
+
+move files to root dir
 
 -----------------------------------------------------------
 -----------------------------------------------------------
