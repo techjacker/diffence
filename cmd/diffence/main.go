@@ -11,10 +11,11 @@ import (
 	df "github.com/techjacker/diffence"
 )
 
+const rulesPath = "../../test/fixtures/rules/gitrob.json"
+
 func main() {
-	gitrobRuleFile := "../../test/fixtures/rules/gitrob.json"
 	_, cmd, _, _ := runtime.Caller(0)
-	rules, err := df.ReadRulesFromFile(path.Join(path.Dir(cmd), gitrobRuleFile))
+	rules, err := df.ReadRulesFromFile(path.Join(path.Dir(cmd), rulesPath))
 	if err != nil {
 		log.Fatalf("Cannot read rule file: %s\n", err)
 		return
