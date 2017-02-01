@@ -1,72 +1,48 @@
 # diffence
 
 Checks a git diff for offensive content.
-
 Golang 1.7+
 
 -----------------------------------------------------------
-
-## Install CLI tool
+## Install
 
 ### Binary
 [Download](../../releases) the latest stable release.
 
-### Source
-
-##### CLI tool
+### CLI
 ```
 go get -u github.com/techjacker/diffence/cmd/diffence
 ```
 
-##### Library
+### Library
 ```
 go get -u github.com/techjacker/diffence
 ```
 
 -----------------------------------------------------------
+## CLI tool
 
-## Usage
+### Example Usage
 ```
-```
-
------------------------------------------------------------
-## [Gitrob Rules - Signature Keys](https://github.com/michenriksen/gitrob#signature-keys)
-
-
-
-
-
------------------------------------------------------------
-## JSON Configuration
-
-By default the CLI tool looks for config.json in $PWD. You can specify a custom location with the `config` flag, eg:
-
-```Shell
-diffence -config ./test/fixtures/config.json
-```
-
-
-#### Example JSON Config
-```json
-{
-	"rules": {
-		"jsonPath": "./test/fixtures/rules.json"
-	}
-}
+touch key.pem
+git add -N key.pem
+git diff HEAD |diffence
 ```
 
 -----------------------------------------------------------
+## Rules
+- currently uses [gitrob rules](https://github.com/michenriksen/gitrob#signature-keys)
+- file body rules coming soon (gitrob rules only check the filename for violations)
+- option to input your own rules coming soon
 
+-----------------------------------------------------------
 ## Tests
-
 ```
 go test ./...
 ```
 
 -----------------------------------------------------------
-
 ## Release
-
 Update the vars in ```env.sh```.
 
 ```shell
@@ -74,25 +50,19 @@ $ release
 ```
 
 -----------------------------------------------------------
-
 ## Local Development
-
 
 #### Build & Run Locally
 ```shell
-go install ./cmd/diffence && diffence -config ./test/fixtures/config.json
+go install -race ./cmd/diffence
 ```
-
 OR
-
 ```shell
-go build -race ./cmd/diffence && ./diffence -config ./test/fixtures/config.json
+go build -race ./cmd/diffence
 ```
-
 
 #### Check for race conditions
-
 ```shell
-go run -race ./cmd/diffence/main.go -config ./test/fixtures/config.json
+go run -race ./cmd/diffence/main.go
 ```
 

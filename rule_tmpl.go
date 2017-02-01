@@ -1,6 +1,7 @@
 package diffence
 
 import (
+	"fmt"
 	"path"
 	"regexp"
 	"strings"
@@ -51,4 +52,13 @@ func (r *rule) extractPart(in string) string {
 		return path.Ext(in)
 	}
 	return in
+}
+
+// String returns a string representation of the rule
+func (r *rule) String() string {
+	return fmt.Sprintf("Caption: %#s\n", r.Caption) +
+		fmt.Sprintf("Description: %#v\n", r.Description) +
+		fmt.Sprintf("Part: %#s\n", r.Part) +
+		fmt.Sprintf("Pattern: %#s\n", r.Pattern) +
+		fmt.Sprintf("Type: %#s\n\n", r.Type)
 }

@@ -1,9 +1,40 @@
+stop CLI hanging on empty input from stdin
+
+-----------------------------------------------------------
+
+Add -config flag to CLI
+	- override default = gitrob rules
+
+	-----------------------------------------------------------
+	## JSON Configuration
+
+	By default the CLI tool looks for config.json in $PWD. You can specify a custom location with the `config` flag, eg:
+
+	```Shell
+	diffence -config ./test/fixtures/config.json
+	```
+
+
+	#### Example JSON Config
+	```json
+	{
+		"rules": {
+			"jsonPath": "./test/fixtures/rules.json"
+		}
+	}
+	```
+
+
+-----------------------------------------------------------
+
 export rule
 	-> rename to Rule
 	- re-enable lint githook (disable for that file)
 	- pull request gojson lib - add description flag
 
 -----------------------------------------------------------
+
+
 -----------------------------------------------------------
 -----------------------------------------------------------
 Add benchmarking
