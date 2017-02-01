@@ -30,7 +30,7 @@ func main() {
 	for k, v := range res {
 		if len(v) > 0 {
 			dirty = true
-			fmt.Printf("\nFile %s violates %d rules:\n", k, len(v))
+			fmt.Printf("File %s violates %d rules:\n", k, len(v))
 			for _, r := range v {
 				fmt.Printf("\n%s\n", r.String())
 			}

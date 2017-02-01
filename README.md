@@ -11,12 +11,12 @@ Golang 1.7+
 
 ### CLI
 ```
-go get -u github.com/techjacker/diffence/cmd/diffence
+$ go get -u github.com/techjacker/diffence/cmd/diffence
 ```
 
 ### Library
 ```
-go get -u github.com/techjacker/diffence
+$ go get -u github.com/techjacker/diffence
 ```
 
 -----------------------------------------------------------
@@ -24,9 +24,25 @@ go get -u github.com/techjacker/diffence
 
 ### Example Usage
 ```
-touch key.pem
-git add -N key.pem
-git diff HEAD |diffence
+$ touch key.pem
+
+$ git add -N key.pem
+
+$ git diff --stat HEAD
+gds HEAD
+ key.pem | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+$ git diff HEAD |diffence
+File key.pem violates 1 rules:
+
+Caption: Potential cryptographic private key
+Description: <nil>
+Part: extension
+Pattern: pem
+Type: match
+
+
 ```
 
 -----------------------------------------------------------
@@ -38,7 +54,7 @@ git diff HEAD |diffence
 -----------------------------------------------------------
 ## Tests
 ```
-go test ./...
+$ go test ./...
 ```
 
 -----------------------------------------------------------
@@ -54,15 +70,15 @@ $ release
 
 #### Build & Run Locally
 ```shell
-go install -race ./cmd/diffence
+$ go install -race ./cmd/diffence
 ```
 OR
 ```shell
-go build -race ./cmd/diffence
+$ go build -race ./cmd/diffence
 ```
 
 #### Check for race conditions
 ```shell
-go run -race ./cmd/diffence/main.go
+$ go run -race ./cmd/diffence/main.go
 ```
 

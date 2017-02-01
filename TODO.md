@@ -1,6 +1,14 @@
 stop CLI hanging on empty input from stdin
 
 -----------------------------------------------------------
+github integration - HTTP server
+- set up fission on kubernetes
+
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
+-----------------------------------------------------------
 
 Add -config flag to CLI
 	- override default = gitrob rules
@@ -23,7 +31,8 @@ Add -config flag to CLI
 		}
 	}
 	```
-
+add option to add multiple rules files
+	- bufio.MultiReader
 
 -----------------------------------------------------------
 
@@ -54,17 +63,6 @@ Perf
 
 
 -----------------------------------------------------------
------------------------------------------------------------
-github integration - HTTP server
-- set up fission on kubernetes
-
------------------------------------------------------------
------------------------------------------------------------
-
-return just error from main function (vs bool, error)
-
------------------------------------------------------------
-
 add logger
 
 -----------------------------------------------------------
@@ -72,8 +70,7 @@ add build task -> convert JSON rules into golang struct
 	- make part of dockerfile?
 
 -----------------------------------------------------------
-add multiple rules files to be inputed
-	bufio.MultiReader
+
 
 -----------------------------------------------------------
 set up realize - live reload run tests etc
