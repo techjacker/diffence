@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -11,18 +12,22 @@ import (
 )
 
 func main() {
-	// r := bytes.NewReader([]byte("hello world"))
 	gitrobRuleFile := "../../test/fixtures/rules/gitrob.json"
 	_, cmd, _, _ := runtime.Caller(0)
 	rules, err := df.ReadRulesFromFile(path.Join(path.Dir(cmd), gitrobRuleFile))
 	if err != nil {
-		log.Fatalf("\nCannot read rule file: %s\n", err)
+		log.Fatalf("Cannot read rule file: %s\n", err)
 		return
 	}
 
-	res, err := df.CheckDiffs(os.Stdin, rules)
+	info, _ := os.Stdin.Stat()
+	if (info.Mode() & os.ModeCharDevice) == os.ModeCharDevice {
+		log.Fatalln("The command is intended to work with pipes.")
+	}
+
+	res, err := df.CheckDiffs(bufio.NewReader(os.Stdin), rules)
 	if err != nil {
-		log.Fatalf("\nError reading diff\n%s\n", err)
+		log.Fatalf("Error reading diff\n%s\n", err)
 		return
 	}
 
@@ -38,7 +43,7 @@ func main() {
 	}
 
 	if dirty == false {
-		fmt.Printf("\nDiff contains no offenses\n\n")
+		fmt.Printf("Diff contains no offenses\n\n")
 		os.Exit(0)
 	}
 	// dirty == true

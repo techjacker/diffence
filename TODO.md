@@ -1,4 +1,13 @@
-stop CLI hanging on empty input from stdin
+Speed up - pauses on stin pipe
+	// r := bytes.NewReader([]byte("hello world"))
+ 	writer := bufio.NewWriter(outfile)
+    defer writer.Flush()
+
+add logger
+	- put in own struct - see in docs
+	- add color ([OK] [ERR])
+	- fmt.Fprint(os.Stdout, "Hello ", 23, "\n")
+
 
 -----------------------------------------------------------
 github integration - HTTP server
@@ -63,7 +72,7 @@ Perf
 
 
 -----------------------------------------------------------
-add logger
+
 
 -----------------------------------------------------------
 add build task -> convert JSON rules into golang struct
