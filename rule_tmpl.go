@@ -7,11 +7,9 @@ import (
 	"strings"
 )
 
-//go:generate gojson -name rule -input ./../test/fixtures/rules/rule.json -o rule.go -pkg diffence -subStruct -tags 'rule'
+//go:generate gojson -name rule -input test/fixtures/rules/rule.json -o rule.go -pkg diffence -subStruct -tags 'rule'
 
-////////////////////////////////////////////////////////
 // https://github.com/michenriksen/gitrob#signature-keys
-////////////////////////////////////////////////////////
 const (
 	// RuleTypeRegex is the regex type for pattern matching
 	RuleTypeRegex = "regex"
@@ -56,9 +54,9 @@ func (r *rule) extractPart(in string) string {
 
 // String returns a string representation of the rule
 func (r *rule) String() string {
-	return fmt.Sprintf("Caption: %#s\n", r.Caption) +
+	return fmt.Sprintf("Caption: %s\n", r.Caption) +
 		fmt.Sprintf("Description: %#v\n", r.Description) +
-		fmt.Sprintf("Part: %#s\n", r.Part) +
-		fmt.Sprintf("Pattern: %#s\n", r.Pattern) +
-		fmt.Sprintf("Type: %#s\n\n", r.Type)
+		fmt.Sprintf("Part: %s\n", r.Part) +
+		fmt.Sprintf("Pattern: %s\n", r.Pattern) +
+		fmt.Sprintf("Type: %s\n\n", r.Type)
 }
