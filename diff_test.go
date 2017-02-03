@@ -75,7 +75,7 @@ func TestSplitDiffs(t *testing.T) {
 				r: getFixtureFile("test/fixtures/diffs/single.diff"),
 			},
 			want: []wantDiff{
-				wantDiff{
+				{
 					header:   "diff --git a/README.md b/README.md",
 					filepath: "README.md",
 				},
@@ -87,31 +87,31 @@ func TestSplitDiffs(t *testing.T) {
 				r: getFixtureFile("test/fixtures/diffs/multi.diff"),
 			},
 			want: []wantDiff{
-				wantDiff{
+				{
 					header:   "diff --git a/TODO.md b/TODO.md",
 					filepath: "TODO.md",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/systemdlogger/aws.py b/systemdlogger/aws.py",
 					filepath: "systemdlogger/aws.py",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/systemdlogger/cloudwatch.py b/systemdlogger/cloudwatch.py",
 					filepath: "systemdlogger/cloudwatch.py",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/tests/fixtures/config.json b/tests/fixtures/config.json",
 					filepath: "tests/fixtures/config.json",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/tests/test_aws.py b/tests/test_aws.py",
 					filepath: "tests/test_aws.py",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/tests/test_cloudwatch.py b/tests/test_cloudwatch.py",
 					filepath: "tests/test_cloudwatch.py",
 				},
-				wantDiff{
+				{
 					header:   "diff --git a/tests/test_runner_integration.py b/tests/test_runner_integration.py",
 					filepath: "tests/test_runner_integration.py",
 				},
