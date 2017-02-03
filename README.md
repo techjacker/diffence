@@ -47,9 +47,11 @@ Type: match
 
 -----------------------------------------------------------
 ## Rules
-- currently uses [gitrob rules](https://github.com/michenriksen/gitrob#signature-keys)
-- file body rules coming soon (gitrob rules only check the filename for violations)
-- option to input your own rules coming soon
+- [x] Analyse filepaths with [gitrob rules](https://github.com/michenriksen/gitrob#signature-keys)
+- [ ] Analyse added lines - need to find/create ruleset that can analyse file contents
+- [ ] Add option to use your own rules again file path/contents
+
+
 
 -----------------------------------------------------------
 ## Tests

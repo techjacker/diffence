@@ -1,12 +1,29 @@
+** make rule public > Rule
+	- disable linter for just this file
+	- pull request to interfacer
+
+add logger
+	- Logger interface fn arg - diff backends possible
+		- see in docs - default logger to be used
+		- alternative = return string (for email/alt export)
+		- cloudwatch/loggly alts  etc
+	- CLI logger
+		- add color ([OK] [ERR])
+		- fmt.Fprint(os.Stdout, "Hello ", 23, "\n")
+
 Speed up - pauses on stin pipe
 	// r := bytes.NewReader([]byte("hello world"))
  	writer := bufio.NewWriter(outfile)
     defer writer.Flush()
 
-add logger
-	- put in own struct - see in docs
-	- add color ([OK] [ERR])
-	- fmt.Fprint(os.Stdout, "Hello ", 23, "\n")
+Add context.cancel
+	- sigterm/cancel -> stop CLI
+
+
+-----------------------------------------------------------
+write git hook integrations:
+	- yelp's pre-commit
+	- overcommit
 
 
 -----------------------------------------------------------
