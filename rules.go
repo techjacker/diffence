@@ -6,8 +6,8 @@ import (
 )
 
 // ReadRulesFromFile reads rules from the local filesystem
-func ReadRulesFromFile(filePath string) (*[]rule, error) {
-	rules := &[]rule{}
+func ReadRulesFromFile(filePath string) (*[]Rule, error) {
+	rules := &[]Rule{}
 
 	f, err := os.Open(filePath)
 	if err != nil {

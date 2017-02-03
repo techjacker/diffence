@@ -12,13 +12,13 @@ func Test_readRules(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *[]rule
+		want    *[]Rule
 		wantErr bool
 	}{
 		{
 			name: "Read rules from file",
 			args: args{filePath: "test/fixtures/rules/rules.json"},
-			want: &[]rule{
+			want: &[]Rule{
 				{
 					Caption:     "Contains word: password",
 					Description: nil,
@@ -32,7 +32,7 @@ func Test_readRules(t *testing.T) {
 		{
 			name:    "Read rules from file",
 			args:    args{filePath: "test/fixtures/does_not_exist.json"},
-			want:    &[]rule{},
+			want:    &[]Rule{},
 			wantErr: true,
 		},
 	}

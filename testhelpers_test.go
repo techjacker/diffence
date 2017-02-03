@@ -18,7 +18,7 @@ func getFixtureFile(filename string) io.Reader {
 	return file
 }
 
-func getRuleFile(filename string) *[]rule {
+func getRuleFile(filename string) *[]Rule {
 	rules, err := ReadRulesFromFile(filename)
 	if err != nil {
 		panic(err)

@@ -94,7 +94,7 @@ func Test_rule_Match(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &rule{
+			r := &Rule{
 				Caption:     tt.fields.Caption,
 				Description: tt.fields.Description,
 				Part:        tt.fields.Part,

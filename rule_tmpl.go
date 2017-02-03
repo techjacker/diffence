@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-//go:generate gojson -name rule -input test/fixtures/rules/rule.json -o rule.go -pkg diffence -subStruct -tags 'rule'
+//go:generate gojson -name Rule -input test/fixtures/rules/rule.json -o rule.go -pkg diffence -subStruct -tags 'Rule'
 
 // https://github.com/michenriksen/gitrob#signature-keys
 const (
@@ -30,7 +30,7 @@ const (
 )
 
 // Match runs rules against input strings
-func (r *rule) Match(in string) bool {
+func (r *Rule) Match(in string) bool {
 	in = r.extractPart(in)
 	switch r.Type {
 	case RuleTypeRegex:
@@ -42,7 +42,7 @@ func (r *rule) Match(in string) bool {
 	return false
 }
 
-func (r *rule) extractPart(in string) string {
+func (r *Rule) extractPart(in string) string {
 	switch r.Part {
 	case RulePartFilename:
 		return path.Base(in)
@@ -53,7 +53,7 @@ func (r *rule) extractPart(in string) string {
 }
 
 // String returns a string representation of the rule
-func (r *rule) String() string {
+func (r *Rule) String() string {
 	return fmt.Sprintf("Caption: %s\n", r.Caption) +
 		fmt.Sprintf("Description: %#v\n", r.Description) +
 		fmt.Sprintf("Part: %s\n", r.Part) +

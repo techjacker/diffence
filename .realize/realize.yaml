@@ -25,7 +25,7 @@ projects:
     after: []
     paths:
     - /
-    - /cmd/diffence
+    # - /cmd/diffence
     ignore_paths:
     - bin
     - cmd

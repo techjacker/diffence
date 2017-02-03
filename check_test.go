@@ -10,7 +10,7 @@ import (
 func TestCheckDiffs(t *testing.T) {
 	type args struct {
 		r     io.Reader
-		rules *[]rule
+		rules *[]Rule
 	}
 
 	ruleSingle := getRuleFile("test/fixtures/rules/rules.json")
@@ -51,8 +51,8 @@ func TestCheckDiffs(t *testing.T) {
 				rules: ruleMulti,
 			},
 			want: Results{
-				"path/to/password.txt": []rule{(*ruleMulti)[0]},
-				"another/file/aws.pem": []rule{(*ruleMulti)[1]},
+				"path/to/password.txt": []Rule{(*ruleMulti)[0]},
+				"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
 			},
 			wantErr: false,
 		},

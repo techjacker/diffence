@@ -1,7 +1,3 @@
-** make rule public > Rule
-	- disable linter for just this file
-	- pull request to interfacer
-
 add logger
 	- Logger interface fn arg - diff backends possible
 		- see in docs - default logger to be used
@@ -25,6 +21,9 @@ write git hook integrations:
 	- yelp's pre-commit
 	- overcommit
 
+-----------------------------------------------------------
+pull request gojson lib - add description flag
+	- re-enable lint githook (disable for that file)
 
 -----------------------------------------------------------
 github integration - HTTP server
@@ -32,6 +31,14 @@ github integration - HTTP server
 
 -----------------------------------------------------------
 -----------------------------------------------------------
+config
+	- rule file locations
+		- fs
+		- http
+	- rule file for:
+		1. filepaths
+		2. added lines
+
 -----------------------------------------------------------
 -----------------------------------------------------------
 -----------------------------------------------------------
@@ -59,16 +66,6 @@ Add -config flag to CLI
 	```
 add option to add multiple rules files
 	- bufio.MultiReader
-
------------------------------------------------------------
-
-export rule
-	-> rename to Rule
-	- re-enable lint githook (disable for that file)
-	- pull request gojson lib - add description flag
-
------------------------------------------------------------
-
 
 -----------------------------------------------------------
 -----------------------------------------------------------
