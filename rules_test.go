@@ -38,13 +38,13 @@ func Test_readRules(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := ReadRulesFromFile(tt.args.filePath)
+			got, err := LoadRulesJSON(tt.args.filePath)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ReadRulesFromFile() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("LoadRulesJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ReadRulesFromFile() = %v, want %v", got, tt.want)
+				t.Errorf("LoadRulesJSON() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -19,7 +19,7 @@ func TestCheckDiffs(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    Results
+		want    Result
 		wantErr bool
 	}{
 		{
@@ -28,8 +28,11 @@ func TestCheckDiffs(t *testing.T) {
 				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
 				rules: ruleSingle,
 			},
-			want: Results{
-				"path/to/password.txt": *ruleSingle,
+			want: Result{
+				Matched: true,
+				MatchedRules: MatchedRules{
+					"path/to/password.txt": *ruleSingle,
+				},
 			},
 			wantErr: false,
 		},
@@ -39,8 +42,11 @@ func TestCheckDiffs(t *testing.T) {
 				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
 				rules: ruleMulti,
 			},
-			want: Results{
-				"path/to/password.txt": *ruleSingle,
+			want: Result{
+				Matched: true,
+				MatchedRules: MatchedRules{
+					"path/to/password.txt": *ruleSingle,
+				},
 			},
 			wantErr: false,
 		},
@@ -50,9 +56,12 @@ func TestCheckDiffs(t *testing.T) {
 				r:     getFixtureFile("test/fixtures/diffs/multi_fail.diff"),
 				rules: ruleMulti,
 			},
-			want: Results{
-				"path/to/password.txt": []Rule{(*ruleMulti)[0]},
-				"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
+			want: Result{
+				Matched: true,
+				MatchedRules: MatchedRules{
+					"path/to/password.txt": []Rule{(*ruleMulti)[0]},
+					"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
+				},
 			},
 			wantErr: false,
 		},
@@ -62,13 +71,17 @@ func TestCheckDiffs(t *testing.T) {
 				r:     bytes.NewReader([]byte("not a diff")),
 				rules: ruleMulti,
 			},
-			want:    Results{},
+			want: Result{
+				Matched:      false,
+				MatchedRules: MatchedRules{},
+			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := CheckDiffs(tt.args.r, tt.args.rules)
+			dc := DiffChecker{tt.args.rules}
+			got, err := dc.Check(tt.args.r)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckDiffs() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -2,14 +2,38 @@ package diffence
 
 import "io"
 
-// Results is hash of results matched for each filepath in a git diff
+// MatchedRules is slice of matched rules for each file in diff
 // [filepath] => Rule{rule1, rule2}
-type Results map[string][]Rule
+type MatchedRules map[string][]Rule
 
-// CheckDiffs is a clean syntax, inefficient way of
-// finding diffs that match the supplied rules
-func CheckDiffs(r io.Reader, rules *[]Rule) (Results, error) {
-	res := Results{}
+// Results is a slice of Result structs
+type Results []Result
+
+// Result compiles the results of matched rules for a diff
+type Result struct {
+	// Have any of the files matches against the rules?
+	Matched      bool
+	MatchedRules MatchedRules
+}
+
+// Checker checks diffs for rule violations
+type Checker interface {
+	Check(io.Reader) (Result, error)
+}
+
+// DiffChecker checks an io.Reader for matches against the supplied ruleset
+type DiffChecker struct {
+	Rules *[]Rule
+}
+
+// Check is a clean syntax but memory inefficient
+// method for finding diffs that match the supplied rules
+// (use an array instead of a map for better performance)
+func (dc DiffChecker) Check(r io.Reader) (Result, error) {
+	res := Result{
+		Matched:      false,
+		MatchedRules: make(map[string][]Rule),
+	}
 
 	diffs, err := SplitDiffs(r)
 	if err != nil || len(diffs) < 1 {
@@ -17,10 +41,13 @@ func CheckDiffs(r io.Reader, rules *[]Rule) (Results, error) {
 	}
 
 	for _, d := range diffs {
-		res[d.filePath] = []Rule{}
-		for _, r := range *rules {
+		for _, r := range *dc.Rules {
 			if r.Match(d.filePath) {
-				res[d.filePath] = append(res[d.filePath], r)
+				res.Matched = true
+				if _, ok := res.MatchedRules[d.filePath]; !ok {
+					res.MatchedRules[d.filePath] = []Rule{}
+				}
+				res.MatchedRules[d.filePath] = append(res.MatchedRules[d.filePath], r)
 			}
 		}
 	}

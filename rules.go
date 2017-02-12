@@ -2,11 +2,24 @@ package diffence
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
+	"path"
+	"runtime"
 )
 
-// ReadRulesFromFile reads rules from the local filesystem
-func ReadRulesFromFile(filePath string) (*[]Rule, error) {
+// LoadRulesJSONFromPwd reads a rules JSON from a path relative to the process's pwd
+func LoadRulesJSONFromPwd(rulesPath string) *[]Rule {
+	_, cmd, _, _ := runtime.Caller(0)
+	rules, err := LoadRulesJSON(path.Join(path.Dir(cmd), rulesPath))
+	if err != nil {
+		panic(fmt.Sprintf("Cannot read rule file: %s\n", err))
+	}
+	return rules
+}
+
+// LoadRulesJSON reads a file of JSON rules from the local filesystem
+func LoadRulesJSON(filePath string) (*[]Rule, error) {
 	rules := &[]Rule{}
 
 	f, err := os.Open(filePath)
