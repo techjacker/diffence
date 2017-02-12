@@ -2,20 +2,6 @@ package diffence
 
 import "io"
 
-// MatchedRules is slice of matched rules for each file in diff
-// [filepath] => Rule{rule1, rule2}
-type MatchedRules map[string][]Rule
-
-// Results is a slice of Result structs
-type Results []Result
-
-// Result compiles the results of matched rules for a diff
-type Result struct {
-	// Have any of the files matches against the rules?
-	Matched      bool
-	MatchedRules MatchedRules
-}
-
 // Checker checks diffs for rule violations
 type Checker interface {
 	Check(io.Reader) (Result, error)

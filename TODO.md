@@ -1,3 +1,5 @@
+add results tests
+
 add logger
 	- Logger interface fn arg - diff backends possible
 		- see in docs - default logger to be used

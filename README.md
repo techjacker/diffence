@@ -1,7 +1,8 @@
 # diffence
 
-Checks a git diff for offensive content.
-Golang 1.7+
+- Checks a git diff for offensive content.
+- Golang 1.7+
+- [Documentation on GoDoc](https://godoc.org/github.com/techjacker/diffence).
 
 -----------------------------------------------------------
 ## Install
