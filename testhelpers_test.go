@@ -1,14 +1,53 @@
 package diffence
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 )
+
+func generateWantDiffFromFiles(headersPath, filepathPath string) []wantDiff {
+	want := []wantDiff{}
+	headerFile, _ := os.Open(headersPath)
+	filepathFile, _ := os.Open(filepathPath)
+	r := io.MultiReader(
+		headerFile,
+		filepathFile,
+	)
+	buffer := bytes.NewBuffer(make([]byte, 0))
+	EOF_headers := false
+	i := 0
+	scanner := bufio.NewScanner(r)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		buffer.Write(scanner.Bytes())
+		raw := buffer.String()
+		// change flag to filePathFile
+		if EOF_headers != true && !strings.HasPrefix(raw, diffSep) {
+			EOF_headers = true
+			i = 0
+		}
+		// headers
+		if EOF_headers == false {
+			want = append(want, wantDiff{raw, ""})
+			i += 1
+			buffer.Reset()
+			continue
+		}
+		// filepaths
+		want[i].filepath = raw
+		i += 1
+		buffer.Reset()
+	}
+	return want
+}
 
 func getFixtureFile(filename string) io.Reader {
 	file, err := os.Open(filename)

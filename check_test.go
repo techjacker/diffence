@@ -83,11 +83,11 @@ func TestCheckDiffs(t *testing.T) {
 			dc := DiffChecker{tt.args.rules}
 			got, err := dc.Check(tt.args.r)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("CheckDiffs() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("CheckDiffs(): %s error = %v, wantErr %v", tt.name, err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CheckDiffs() = %v, want %v", got, tt.want)
+				t.Errorf("CheckDiffs(): %s = %v, want %v", tt.name, got, tt.want)
 			}
 		})
 	}
