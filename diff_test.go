@@ -65,12 +65,13 @@ func TestSplitDiffs(t *testing.T) {
 	}
 
 	tests := []struct {
-		name string
-		args args
-		want []wantDiff
+		name     string
+		args     args
+		want     []wantDiff
+		lenDiffs int
 	}{
 		{
-			name: "Differ.Parse()",
+			name: "SplitDiffs()",
 			args: args{
 				r: getFixtureFile("test/fixtures/diffs/single.diff"),
 			},
@@ -82,7 +83,7 @@ func TestSplitDiffs(t *testing.T) {
 			},
 		},
 		{
-			name: "Differ.Parse()",
+			name: "SplitDiffs()",
 			args: args{
 				r: getFixtureFile("test/fixtures/diffs/multi.diff"),
 			},
@@ -117,6 +118,40 @@ func TestSplitDiffs(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "SplitDiffs()",
+			args: args{
+				r: getFixtureFile("test/fixtures/diffs/logp.truncated.diff"),
+			},
+			want: []wantDiff{
+				{
+					header:   "diff --git a/README.md b/README.md",
+					filepath: "README.md",
+				},
+				{
+					header:   "diff --git a/TODO.md b/TODO.md",
+					filepath: "TODO.md",
+				},
+				{
+					header:   "diff --git a/check.go b/check.go",
+					filepath: "check.go",
+				},
+				{
+					header:   "diff --git a/results.go b/results.go",
+					filepath: "results.go",
+				},
+			},
+		},
+		{
+			name: "SplitDiffs()",
+			args: args{
+				r: getFixtureFile("test/fixtures/diffs/logp.diff"),
+			},
+			want: generateWantDiffFromFiles(
+				"test/fixtures/diffs/expected/logp.diff.headers.txt",
+				"test/fixtures/diffs/expected/logp.diff.filepaths.txt",
+			),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -124,14 +159,14 @@ func TestSplitDiffs(t *testing.T) {
 			// check for error scanning
 			items, err := SplitDiffs(tt.args.r)
 			if err != nil {
+				t.Logf("SplitDiffs =%d", len(items))
 				t.Fatalf("SplitDiffs threw error %#v", err)
 			}
-
 			// check extracting metadata
 			for i, di := range items {
 				header, _ := extractHeader(di.raw)
-				equals(t, header, tt.want[i].header)
-				equals(t, di.filePath, tt.want[i].filepath)
+				equals(t, tt.want[i].header, header)
+				equals(t, tt.want[i].filepath, di.filePath)
 			}
 		})
 	}
@@ -147,7 +182,7 @@ type wantErr struct {
 	filepath bool
 }
 
-func Test_extract(t *testing.T) {
+func TestExtract(t *testing.T) {
 	type args struct {
 		in string
 	}
@@ -157,6 +192,19 @@ func Test_extract(t *testing.T) {
 		want    wantDiff
 		wantErr wantErr
 	}{
+		{
+			name: "diff.getHeader()",
+			args: args{
+				in: "diff --git a/lib/check.go b/lib/check.go" +
+					"\n" +
+					"index 82366e3..5fc99b9 100644",
+			},
+			want: wantDiff{
+				header:   "diff --git a/lib/check.go b/lib/check.go",
+				filepath: "lib/check.go",
+			},
+			wantErr: wantErr{false, false},
+		},
 		{
 			name: "diff.getHeader()",
 			args: args{
@@ -194,15 +242,28 @@ func Test_extract(t *testing.T) {
 			},
 			wantErr: wantErr{true, true},
 		},
+		{
+			name: "diff.getHeader()",
+			args: args{
+				in: "diff --git a/cmd/diffence/main.go b/cmd/diffence/main.go" +
+					"\n" +
+					"index 08044af..098342c 100644",
+			},
+			want: wantDiff{
+				header:   "diff --git a/cmd/diffence/main.go b/cmd/diffence/main.go",
+				filepath: "cmd/diffence/main.go",
+			},
+			wantErr: wantErr{false, false},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			header, errHeader := extractHeader(tt.args.in)
-			equals(t, errHeader != nil, tt.wantErr.header)
-			equals(t, header, tt.want.header)
+			equals(t, tt.wantErr.header, errHeader != nil)
+			equals(t, tt.want.header, header)
 			filepath, errFilepath := extractFilePath(tt.args.in)
-			equals(t, errFilepath != nil, tt.wantErr.filepath)
-			equals(t, filepath, tt.want.filepath)
+			equals(t, tt.wantErr.filepath, errFilepath != nil)
+			equals(t, tt.want.filepath, filepath)
 		})
 	}
 }
