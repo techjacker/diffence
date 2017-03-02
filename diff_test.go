@@ -145,6 +145,26 @@ func TestSplitDiffs(t *testing.T) {
 		{
 			name: "SplitDiffs()",
 			args: args{
+				r: getFixtureFile("test/fixtures/diffs/longline.diff"),
+			},
+			want: []wantDiff{
+				{
+					header:   "diff --git a/web/src/main/resources/static/js/menu.js b/web/src/main/resources/static/js/menu.js",
+					filepath: "web/src/main/resources/static/js/menu.js",
+				},
+				{
+					header:   "diff --git a/web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js b/web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js",
+					filepath: "web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js",
+				},
+				{
+					header:   "diff --git a/web/src/main/resources/templates/layout.vm b/web/src/main/resources/templates/layout.vm",
+					filepath: "web/src/main/resources/templates/layout.vm",
+				},
+			},
+		},
+		{
+			name: "SplitDiffs()",
+			args: args{
 				r: getFixtureFile("test/fixtures/diffs/logp.diff"),
 			},
 			want: generateWantDiffFromFiles(
@@ -192,6 +212,20 @@ func TestExtract(t *testing.T) {
 		want    wantDiff
 		wantErr wantErr
 	}{
+
+		{
+			name: "diff.getHeader() - Admin Password",
+			args: args{
+				in: "diff --git a/web/src/main/resources/db/migration/V0_4__AdminPassword.sql b/web/src/main/resources/db/migration/V0_4__AdminPassword.sql" +
+					"\n" +
+					"index 82366e3..5fc99b9 100644",
+			},
+			want: wantDiff{
+				header:   "diff --git a/web/src/main/resources/db/migration/V0_4__AdminPassword.sql b/web/src/main/resources/db/migration/V0_4__AdminPassword.sql",
+				filepath: "web/src/main/resources/db/migration/V0_4__AdminPassword.sql",
+			},
+			wantErr: wantErr{false, false},
+		},
 		{
 			name: "diff.getHeader()",
 			args: args{
