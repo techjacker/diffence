@@ -1,7 +1,9 @@
+[![Build Status](https://travis-ci.org/techjacker/diffence.svg?branch=master)](https://travis-ci.org/techjacker/diffence)
+
 # diffence
 
 - Checks a git diff for offensive content.
-- Golang 1.7+
+- Golang 1+
 - [Documentation on GoDoc](https://godoc.org/github.com/techjacker/diffence).
 
 -----------------------------------------------------------

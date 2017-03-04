@@ -8,11 +8,13 @@ RULES_URL = https://raw.githubusercontent.com/michenriksen/gitrob/master/signatu
 install:
 	@go install -race ./cmd/diffence
 
+build:
+	@go build -race ./cmd/diffence
+
 lint:
 	@golint  -set_exit_status ./...
 	@go vet ./...
 	@interfacer $(go list ./... | grep -v /vendor/)
-
 
 rules:
 	@curl -s $(RULES_URL) > $(RULES_DIR)/gitrob.json
@@ -21,17 +23,14 @@ diff:
 	@curl -s https://api.github.com/repos/$(USER)/$(REPO)/commits/$(COMMIT_ID) \
 		-H "Accept: application/vnd.github.VERSION.diff"
 
-run:
-	@go build -race ./cmd/diffence && ./diffence
-
 test:
-	@go test ./...
+	@go test
 
 test-cover:
-	@go test -cover ./...
+	@go test -cover
 
 test-race:
-	@go test -race ./...
+	@go test -race
 
 
-.PHONY: test run
+.PHONY: test* run diff rules lint install build

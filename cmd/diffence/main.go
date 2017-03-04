@@ -36,7 +36,7 @@ func main() {
 			fmt.Printf("Violation %d\n", i)
 			fmt.Printf("File: %s\n", filename)
 			fmt.Printf("Reason: %#v\n\n", rule[0].Caption)
-			i += 1
+			i++
 		}
 		os.Exit(1)
 		return

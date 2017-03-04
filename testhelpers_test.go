@@ -22,7 +22,7 @@ func generateWantDiffFromFiles(headersPath, filepathPath string) []wantDiff {
 		filepathFile,
 	)
 	buffer := bytes.NewBuffer(make([]byte, 0))
-	EOF_headers := false
+	EOFHeaders := false
 	i := 0
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
@@ -30,20 +30,20 @@ func generateWantDiffFromFiles(headersPath, filepathPath string) []wantDiff {
 		buffer.Write(scanner.Bytes())
 		raw := buffer.String()
 		// change flag to filePathFile
-		if EOF_headers != true && !strings.HasPrefix(raw, diffSep) {
-			EOF_headers = true
+		if EOFHeaders != true && !strings.HasPrefix(raw, diffSep) {
+			EOFHeaders = true
 			i = 0
 		}
 		// headers
-		if EOF_headers == false {
+		if EOFHeaders == false {
 			want = append(want, wantDiff{raw, ""})
-			i += 1
+			i++
 			buffer.Reset()
 			continue
 		}
 		// filepaths
 		want[i].filepath = raw
-		i += 1
+		i++
 		buffer.Reset()
 	}
 	return want
