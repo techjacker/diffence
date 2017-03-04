@@ -1,10 +1,13 @@
 [![Build Status](https://travis-ci.org/techjacker/diffence.svg?branch=master)](https://travis-ci.org/techjacker/diffence)
 
 # diffence
+- Checks a git diff for passwords/secret keys accidentally committed
+- Golang 1.7+
 
-- Checks a git diff for offensive content.
-- Golang 1+
-- [Documentation on GoDoc](https://godoc.org/github.com/techjacker/diffence).
+
+### Check the entire history of current branch for passwords/keys committed
+
+```$ git log -p | diffence```
 
 -----------------------------------------------------------
 ## Install
