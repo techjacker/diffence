@@ -34,10 +34,16 @@ func (r *Rule) Match(in string) bool {
 	in = r.extractPart(in)
 	switch r.Type {
 	case RuleTypeRegex:
-		reg := regexp.MustCompile(r.Pattern)
+		// make match case insensitive
+		reg := regexp.MustCompile("(?i)" + r.Pattern)
+		// fmt.Printf("%#v\n", reg)
+		// reg.Op = OpBeginLine | OpEndLine
+		// fmt.Printf("%s\n", r.Pattern)
 		return reg.MatchString(in)
 	case RuleTypeMatch:
-		return strings.Contains(in, r.Pattern)
+		// make match case insensitive
+		return strings.Contains(strings.ToLower(in), strings.ToLower(r.Pattern))
+		// return strings.Contains(in, r.Pattern)
 	}
 	return false
 }

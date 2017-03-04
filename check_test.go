@@ -12,8 +12,8 @@ func TestCheckDiffs(t *testing.T) {
 		r     io.Reader
 		rules *[]Rule
 	}
-
 	ruleSingle := getRuleFile("test/fixtures/rules/rules.json")
+	// rulesExtended := getRuleFile("test/fixtures/rules/rules_extended_regex.json")
 	ruleMulti := getRuleFile("test/fixtures/rules/rules_multi.json")
 
 	tests := []struct {
@@ -37,7 +37,7 @@ func TestCheckDiffs(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Recognises an offensive diff",
+			name: "Recognises an offensive diff - single_fail.diff",
 			args: args{
 				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
 				rules: ruleMulti,
@@ -51,7 +51,7 @@ func TestCheckDiffs(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Recognises an offensive diff",
+			name: "Recognises an offensive diff - multi_fail.diff",
 			args: args{
 				r:     getFixtureFile("test/fixtures/diffs/multi_fail.diff"),
 				rules: ruleMulti,
@@ -65,6 +65,21 @@ func TestCheckDiffs(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		// {
+		// 	name: "Recognises an offensive diff - sqlpassword.diff",
+		// 	args: args{
+		// 		r:     getFixtureFile("test/fixtures/diffs/sqlpassword.diff"),
+		// 		rules: rulesExtended,
+		// 	},
+		// 	want: Result{
+		// 		Matched: true,
+		// 		MatchedRules: MatchedRules{
+		// 			"web/src/main/resources/db/migration/V0_2__SeedData.sql": []Rule{(*rulesExtended)[0]},
+		// 			// "web/src/main/resources/db/migration/V0_4__AdminPassword.sql": *ruleSingle,
+		// 		},
+		// 	},
+		// 	wantErr: false,
+		// },
 		{
 			name: "Recognises non diff text",
 			args: args{

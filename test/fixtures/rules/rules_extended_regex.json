@@ -1,0 +1,13 @@
+[{
+	"part": "extension",
+	"type": "regex",
+	"pattern": "\\Asql(dump)?\\z",
+	"caption": "SQL dump file",
+	"description": null
+}, {
+	"part": "filename",
+	"type": "regex",
+	"pattern": "password",
+	"caption": "Contains word: password",
+	"description": null
+}]
