@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -9,18 +10,34 @@ import (
 	"github.com/techjacker/diffence"
 )
 
-const rulesPath = "test/fixtures/rules/gitrob.json"
-
 func main() {
+
+	rPath := flag.String("rules", "", "path to rules in JSON format")
+	// rPath := flag.String("rules", "test/fixtures/rules/gitrob.json", "path to rules in JSON format")
+	flag.Parse()
 
 	info, _ := os.Stdin.Stat()
 	if (info.Mode() & os.ModeCharDevice) == os.ModeCharDevice {
 		log.Fatalln("The command is intended to work with pipes.")
+		return
 	}
 
-	diff := diffence.DiffChecker{
-		Rules: diffence.LoadRulesJSONFromPwd(rulesPath),
+	var (
+		err   error
+		rules *[]diffence.Rule
+	)
+
+	if len(*rPath) > 0 {
+		rules, err = diffence.LoadRulesJSON(*rPath)
+	} else {
+		rules, err = diffence.LoadDefaultRules()
 	}
+	if err != nil {
+		log.Fatalf("Cannot load rules\n%s", err)
+		return
+	}
+
+	diff := diffence.DiffChecker{Rules: rules}
 	res, err := diff.Check(bufio.NewReader(os.Stdin))
 	if err != nil {
 		log.Fatalf("Error reading diff\n%s\n", err)
@@ -38,6 +55,7 @@ func main() {
 			fmt.Printf("Reason: %#v\n\n", rule[0].Caption)
 			i++
 		}
+		// finding violations constitutes an error
 		os.Exit(1)
 		return
 	}
