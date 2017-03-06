@@ -2,7 +2,7 @@ package diffence
 
 import "testing"
 
-func Test_rule_Match(t *testing.T) {
+func Test_RuleMatch(t *testing.T) {
 	type fields struct {
 		Caption     string
 		Description interface{}
@@ -19,6 +19,18 @@ func Test_rule_Match(t *testing.T) {
 		args   args
 		want   bool
 	}{
+		{
+			name: "Should find a match with obscure regex rules",
+			fields: fields{
+				Caption:     "SQL dump file",
+				Description: nil,
+				Part:        "extension",
+				Pattern:     "\\Asql(dump)?\\z",
+				Type:        "regex",
+			},
+			args: args{"/web/src/main/resources/db/migration/V0_4__AdminPassword.sql"},
+			want: true,
+		},
 		{
 			name: "Should find a match",
 			fields: fields{

@@ -13,8 +13,8 @@ func TestCheckDiffs(t *testing.T) {
 		rules *[]Rule
 	}
 	ruleSingle := getRuleFile("test/fixtures/rules/rules.json")
-	// rulesExtended := getRuleFile("test/fixtures/rules/rules_extended_regex.json")
 	ruleMulti := getRuleFile("test/fixtures/rules/rules_multi.json")
+	rulesExtended := getRuleFile("test/fixtures/rules/rules_extended_regex.json")
 
 	tests := []struct {
 		name    string
@@ -22,6 +22,21 @@ func TestCheckDiffs(t *testing.T) {
 		want    Result
 		wantErr bool
 	}{
+		{
+			name: "Recognises an offensive diff - sqlpassword.diff",
+			args: args{
+				r:     getFixtureFile("test/fixtures/diffs/sqlpassword.diff"),
+				rules: rulesExtended,
+			},
+			want: Result{
+				Matched: true,
+				MatchedRules: MatchedRules{
+					"web/src/main/resources/db/migration/V0_4__AdminPassword.sql": *rulesExtended,
+					"web/src/main/resources/db/migration/V0_2__SeedData.sql":      []Rule{(*rulesExtended)[0]},
+				},
+			},
+			wantErr: false,
+		},
 		{
 			name: "Recognises an offensive diff",
 			args: args{
@@ -65,21 +80,6 @@ func TestCheckDiffs(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		// {
-		// 	name: "Recognises an offensive diff - sqlpassword.diff",
-		// 	args: args{
-		// 		r:     getFixtureFile("test/fixtures/diffs/sqlpassword.diff"),
-		// 		rules: rulesExtended,
-		// 	},
-		// 	want: Result{
-		// 		Matched: true,
-		// 		MatchedRules: MatchedRules{
-		// 			"web/src/main/resources/db/migration/V0_2__SeedData.sql": []Rule{(*rulesExtended)[0]},
-		// 			// "web/src/main/resources/db/migration/V0_4__AdminPassword.sql": *ruleSingle,
-		// 		},
-		// 	},
-		// 	wantErr: false,
-		// },
 		{
 			name: "Recognises non diff text",
 			args: args{
@@ -102,7 +102,7 @@ func TestCheckDiffs(t *testing.T) {
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("CheckDiffs(): %s = %v, want %v", tt.name, got, tt.want)
+				t.Errorf("CheckDiffs(): %s\n\n got:%#v\n\nwant: %#v", tt.name, got, tt.want)
 			}
 		})
 	}

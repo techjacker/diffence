@@ -36,9 +36,6 @@ func (r *Rule) Match(in string) bool {
 	case RuleTypeRegex:
 		// make match case insensitive
 		reg := regexp.MustCompile("(?i)" + r.Pattern)
-		// fmt.Printf("%#v\n", reg)
-		// reg.Op = OpBeginLine | OpEndLine
-		// fmt.Printf("%s\n", r.Pattern)
 		return reg.MatchString(in)
 	case RuleTypeMatch:
 		// make match case insensitive
@@ -53,7 +50,7 @@ func (r *Rule) extractPart(in string) string {
 	case RulePartFilename:
 		return path.Base(in)
 	case RulePartExtension:
-		return path.Ext(in)
+		return strings.TrimLeft(path.Ext(in), ".")
 	}
 	return in
 }
