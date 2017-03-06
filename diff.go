@@ -30,7 +30,8 @@ func SplitDiffs(r io.Reader) ([]DiffItem, error) {
 	scanner := bufio.NewScanner(r)
 	// increase buffer size for long lines
 	buf := make([]byte, 0, 64*1024)
-	scanner.Buffer(buf, 1024*1024)
+	// 10MB
+	scanner.Buffer(buf, 1024*1024*10)
 	// split diffs
 	scanner.Split(ScanDiffs)
 
