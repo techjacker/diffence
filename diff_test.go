@@ -2,11 +2,6 @@ package diffence
 
 import "testing"
 
-type wantDiff struct {
-	header   string
-	filepath string
-}
-
 type wantErr struct {
 	header   bool
 	filepath bool
@@ -19,7 +14,7 @@ func TestDiffPush(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    wantDiff
+		want    DiffItem
 		wantErr wantErr
 	}{
 
@@ -30,7 +25,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    wantDiff{filepath: "web/src/main/resources/db/migration/V0_4__AdminPassword.sql"},
+			want:    DiffItem{filepath: "web/src/main/resources/db/migration/V0_4__AdminPassword.sql"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -40,7 +35,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    wantDiff{filepath: "lib/check.go"},
+			want:    DiffItem{filepath: "lib/check.go"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -50,7 +45,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    wantDiff{filepath: "README.md"},
+			want:    DiffItem{filepath: "README.md"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -60,7 +55,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    wantDiff{filepath: "TODO.md"},
+			want:    DiffItem{filepath: "TODO.md"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -68,7 +63,7 @@ func TestDiffPush(t *testing.T) {
 			args: args{
 				in: "hello world",
 			},
-			want:    wantDiff{filepath: ""},
+			want:    DiffItem{filepath: ""},
 			wantErr: wantErr{true, true},
 		},
 		{
@@ -78,7 +73,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 08044af..098342c 100644",
 			},
-			want:    wantDiff{filepath: "cmd/diffence/main.go"},
+			want:    DiffItem{filepath: "cmd/diffence/main.go"},
 			wantErr: wantErr{false, false},
 		},
 	}

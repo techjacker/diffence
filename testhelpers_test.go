@@ -9,40 +9,23 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime"
-	"strings"
 	"testing"
 )
 
-func generateWantDiffFromFiles(headersPath, filepathPath string) []wantDiff {
-	want := []wantDiff{}
-	headerFile, _ := os.Open(headersPath)
+func generateWantDiffFromFiles(filepathPath string) []DiffItem {
+	want := []DiffItem{}
 	filepathFile, _ := os.Open(filepathPath)
 	r := io.MultiReader(
-		headerFile,
 		filepathFile,
 	)
 	buffer := bytes.NewBuffer(make([]byte, 0))
-	EOFHeaders := false
 	i := 0
 	scanner := bufio.NewScanner(r)
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		buffer.Write(scanner.Bytes())
-		raw := buffer.String()
-		// change flag to filepathFile
-		if EOFHeaders != true && !strings.HasPrefix(raw, diffSep) {
-			EOFHeaders = true
-			i = 0
-		}
-		// headers
-		if EOFHeaders == false {
-			want = append(want, wantDiff{raw, ""})
-			i++
-			buffer.Reset()
-			continue
-		}
-		// filepaths
-		want[i].filepath = raw
+		filepath := buffer.String()
+		want = append(want, DiffItem{filepath: filepath})
 		i++
 		buffer.Reset()
 	}

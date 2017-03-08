@@ -62,29 +62,26 @@ func TestScanDiffsWithBufioScanner(t *testing.T) {
 func TestSplitDiffs(t *testing.T) {
 	type args struct {
 		r io.Reader
+		// ignore []string
 	}
 
 	tests := []struct {
 		name     string
 		args     args
-		want     []wantDiff
+		want     []DiffItem
 		lenDiffs int
 	}{
 		{
 			name: "SplitDiffs()",
-			args: args{
-				r: getFixtureFile("test/fixtures/diffs/single.diff"),
-			},
-			want: []wantDiff{
+			args: args{r: getFixtureFile("test/fixtures/diffs/single.diff")},
+			want: []DiffItem{
 				{filepath: "README.md"},
 			},
 		},
 		{
 			name: "SplitDiffs()",
-			args: args{
-				r: getFixtureFile("test/fixtures/diffs/multi.diff"),
-			},
-			want: []wantDiff{
+			args: args{r: getFixtureFile("test/fixtures/diffs/multi.diff")},
+			want: []DiffItem{
 				{filepath: "TODO.md"},
 				{filepath: "systemdlogger/aws.py"},
 				{filepath: "systemdlogger/cloudwatch.py"},
@@ -96,10 +93,8 @@ func TestSplitDiffs(t *testing.T) {
 		},
 		{
 			name: "SplitDiffs()",
-			args: args{
-				r: getFixtureFile("test/fixtures/diffs/logp.truncated.diff"),
-			},
-			want: []wantDiff{
+			args: args{r: getFixtureFile("test/fixtures/diffs/logp.truncated.diff")},
+			want: []DiffItem{
 				{filepath: "README.md"},
 				{filepath: "TODO.md"},
 				{filepath: "check.go"},
@@ -108,10 +103,8 @@ func TestSplitDiffs(t *testing.T) {
 		},
 		{
 			name: "SplitDiffs()",
-			args: args{
-				r: getFixtureFile("test/fixtures/diffs/longline.diff"),
-			},
-			want: []wantDiff{
+			args: args{r: getFixtureFile("test/fixtures/diffs/longline.diff")},
+			want: []DiffItem{
 				{filepath: "web/src/main/resources/static/js/menu.js"},
 				{filepath: "web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js"},
 				{filepath: "web/src/main/resources/templates/layout.vm"},
@@ -119,13 +112,8 @@ func TestSplitDiffs(t *testing.T) {
 		},
 		{
 			name: "SplitDiffs()",
-			args: args{
-				r: getFixtureFile("test/fixtures/diffs/logp.diff"),
-			},
-			want: generateWantDiffFromFiles(
-				"test/fixtures/diffs/expected/logp.diff.headers.txt",
-				"test/fixtures/diffs/expected/logp.diff.filepaths.txt",
-			),
+			args: args{r: getFixtureFile("test/fixtures/diffs/logp.diff")},
+			want: generateWantDiffFromFiles("test/fixtures/diffs/expected/logp.diff.filepaths.txt"),
 		},
 	}
 	for _, tt := range tests {
