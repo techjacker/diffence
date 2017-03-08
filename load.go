@@ -29,10 +29,10 @@ func LoadRulesJSONFromPwd(rulesPath string) *[]Rule {
 }
 
 // LoadRulesJSON reads a file of JSON rules from the local filesystem
-func LoadRulesJSON(filePath string) (*[]Rule, error) {
+func LoadRulesJSON(filepath string) (*[]Rule, error) {
 	rules := &[]Rule{}
 
-	f, err := os.Open(filePath)
+	f, err := os.Open(filepath)
 	if err != nil {
 		return rules, err
 	}

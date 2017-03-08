@@ -13,9 +13,9 @@ type List interface {
 // DiffItem is a diff struct for an inidividual file
 type DiffItem struct {
 	raw      string
-	filePath string
+	filepath string
 	// w      io.Writer
-	// filePath fmt.Stringer
+	// filepath fmt.Stringer
 	// addedText string
 	// match        bool
 	// matchedRules []rule
@@ -29,19 +29,19 @@ type Diff struct {
 
 // Push a diff on to the list
 func (d *Diff) Push(s string) {
-	filePath, err := extractFilePath(s)
+	filepath, err := extractFilePath(s)
 	if err != nil {
 		d.Error = err
 		return
 	}
 
-	// if shouldIgnore(filePath) == true {
+	// if shouldIgnore(filepath) == true {
 	// 	continue
 	// }
 
 	d.Items = append(d.Items, DiffItem{
 		raw:      s,
-		filePath: filePath,
+		filepath: filepath,
 	})
 }
 

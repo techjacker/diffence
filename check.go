@@ -25,12 +25,12 @@ func (dc DiffChecker) Check(r io.Reader) (Result, error) {
 
 	for _, d := range diff.Items {
 		for _, r := range *dc.Rules {
-			if r.Match(d.filePath) {
+			if r.Match(d.filepath) {
 				res.Matched = true
-				if _, ok := res.MatchedRules[d.filePath]; !ok {
-					res.MatchedRules[d.filePath] = []Rule{}
+				if _, ok := res.MatchedRules[d.filepath]; !ok {
+					res.MatchedRules[d.filepath] = []Rule{}
 				}
-				res.MatchedRules[d.filePath] = append(res.MatchedRules[d.filePath], r)
+				res.MatchedRules[d.filepath] = append(res.MatchedRules[d.filepath], r)
 			}
 		}
 	}

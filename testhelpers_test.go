@@ -29,7 +29,7 @@ func generateWantDiffFromFiles(headersPath, filepathPath string) []wantDiff {
 	for scanner.Scan() {
 		buffer.Write(scanner.Bytes())
 		raw := buffer.String()
-		// change flag to filePathFile
+		// change flag to filepathFile
 		if EOFHeaders != true && !strings.HasPrefix(raw, diffSep) {
 			EOFHeaders = true
 			i = 0

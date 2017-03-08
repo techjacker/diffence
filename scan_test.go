@@ -137,7 +137,7 @@ func TestSplitDiffs(t *testing.T) {
 				t.Fatalf("SplitDiffs threw error %#v", err)
 			}
 			for i, di := range d.Items {
-				equals(t, tt.want[i].filepath, di.filePath)
+				equals(t, tt.want[i].filepath, di.filepath)
 			}
 		})
 	}
