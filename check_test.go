@@ -35,7 +35,6 @@ func TestCheckDiffs(t *testing.T) {
 					"web/src/main/resources/db/migration/V0_2__SeedData.sql":      []Rule{(*rulesExtended)[0]},
 				},
 			},
-			wantErr: false,
 		},
 		{
 			name: "Recognises an offensive diff",
@@ -49,7 +48,6 @@ func TestCheckDiffs(t *testing.T) {
 					"path/to/password.txt": *ruleSingle,
 				},
 			},
-			wantErr: false,
 		},
 		{
 			name: "Recognises an offensive diff - single_fail.diff",
@@ -63,7 +61,6 @@ func TestCheckDiffs(t *testing.T) {
 					"path/to/password.txt": *ruleSingle,
 				},
 			},
-			wantErr: false,
 		},
 		{
 			name: "Recognises an offensive diff - multi_fail.diff",
@@ -78,7 +75,6 @@ func TestCheckDiffs(t *testing.T) {
 					"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
 				},
 			},
-			wantErr: false,
 		},
 		{
 			name: "Recognises non diff text",
@@ -90,17 +86,12 @@ func TestCheckDiffs(t *testing.T) {
 				Matched:      false,
 				MatchedRules: MatchedRules{},
 			},
-			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dc := DiffChecker{tt.args.rules}
-			got, err := dc.Check(tt.args.r)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CheckDiffs(): %s error = %v, wantErr %v", tt.name, err, tt.wantErr)
-				return
-			}
+			got, _ := dc.Check(tt.args.r)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CheckDiffs(): %s\n\n got:%#v\n\nwant: %#v", tt.name, got, tt.want)
 			}

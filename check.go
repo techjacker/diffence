@@ -20,13 +20,10 @@ func (dc DiffChecker) Check(r io.Reader) (Result, error) {
 		Matched:      false,
 		MatchedRules: make(map[string][]Rule),
 	}
+	diff := Diff{}
+	err := SplitDiffs(r, &diff)
 
-	diffs, err := SplitDiffs(r)
-	if err != nil || len(diffs) < 1 {
-		return res, err
-	}
-
-	for _, d := range diffs {
+	for _, d := range diff.Items {
 		for _, r := range *dc.Rules {
 			if r.Match(d.filePath) {
 				res.Matched = true

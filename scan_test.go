@@ -175,15 +175,13 @@ func TestSplitDiffs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			// check for error scanning
-			items, err := SplitDiffs(tt.args.r)
+			d := Diff{}
+			err := SplitDiffs(tt.args.r, &d)
 			if err != nil {
-				t.Logf("SplitDiffs =%d", len(items))
+				t.Logf("SplitDiffs =%d", len(d.Items))
 				t.Fatalf("SplitDiffs threw error %#v", err)
 			}
-			// check extracting metadata
-			for i, di := range items {
+			for i, di := range d.Items {
 				header, _ := extractHeader(di.raw)
 				equals(t, tt.want[i].header, header)
 				equals(t, tt.want[i].filepath, di.filePath)
