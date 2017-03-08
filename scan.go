@@ -9,11 +9,11 @@ import (
 
 const (
 	diffSep = "diff --git a"
-	pathSep = " b/"
 )
 
 // SplitDiffs splits a single diff txt into an individual DiffItem for each file changed
-func SplitDiffs(r io.Reader, d *Diff) error {
+// func SplitDiffs(r io.Reader, d *Diff) error {
+func SplitDiffs(r io.Reader, l List) error {
 
 	// increase buffer size
 	scanner := bufio.NewScanner(r)
@@ -36,7 +36,8 @@ func SplitDiffs(r io.Reader, d *Diff) error {
 			buffer.Reset()
 			continue
 		}
-		d.Push(raw)
+		l.Push(raw)
+		// l.Push(extractFilePath(raw))
 		buffer.Reset()
 	}
 

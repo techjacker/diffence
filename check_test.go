@@ -90,7 +90,7 @@ func TestCheckDiffs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dc := DiffChecker{tt.args.rules}
+			dc := DiffChecker{Rules: tt.args.rules}
 			got, _ := dc.Check(tt.args.r)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CheckDiffs(): %s\n\n got:%#v\n\nwant: %#v", tt.name, got, tt.want)

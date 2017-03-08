@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+const (
+	pathSep = " b/"
+)
+
 // List is an interface for adding items to a list
 type List interface {
 	Push(string)
@@ -12,10 +16,10 @@ type List interface {
 
 // DiffItem is a diff struct for an inidividual file
 type DiffItem struct {
-	raw      string
-	filepath string
+	raw   string
+	fPath string
 	// w      io.Writer
-	// filepath fmt.Stringer
+	// fPath fmt.Stringer
 	// addedText string
 	// match        bool
 	// matchedRules []rule
@@ -23,25 +27,27 @@ type DiffItem struct {
 
 // Diff is a list of split diffs
 type Diff struct {
-	Items []DiffItem
-	Error error
+	ignorer Matcher
+	Items   []DiffItem
+	Error   error
 }
 
 // Push a diff on to the list
 func (d *Diff) Push(s string) {
-	filepath, err := extractFilePath(s)
+	fPath, err := extractFilePath(s)
 	if err != nil {
 		d.Error = err
 		return
 	}
 
-	// if shouldIgnore(filepath) == true {
-	// 	continue
+	// fmt.Printf("%s\n", d.ignorer.Match(fPath))
+	// if d.ignorer.Match(fPath) == true {
+	// 	return
 	// }
 
 	d.Items = append(d.Items, DiffItem{
-		raw:      s,
-		filepath: filepath,
+		raw:   s,
+		fPath: fPath,
 	})
 }
 

@@ -27,5 +27,5 @@ func (r Result) Matches() int {
 }
 
 // MatchedRules is slice of matched rules for each file in diff
-// [filepath] => Rule{rule1, rule2}
+// [fPath] => Rule{rule1, rule2}
 type MatchedRules map[string][]Rule

@@ -38,7 +38,7 @@ config
 		- fs
 		- http
 	- rule file for:
-		1. filepaths
+		1. fPaths
 		2. added lines
 
 -----------------------------------------------------------

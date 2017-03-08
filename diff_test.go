@@ -3,8 +3,8 @@ package diffence
 import "testing"
 
 type wantErr struct {
-	header   bool
-	filepath bool
+	header bool
+	fPath  bool
 }
 
 func TestDiffPush(t *testing.T) {
@@ -25,7 +25,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    DiffItem{filepath: "web/src/main/resources/db/migration/V0_4__AdminPassword.sql"},
+			want:    DiffItem{fPath: "web/src/main/resources/db/migration/V0_4__AdminPassword.sql"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -35,7 +35,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    DiffItem{filepath: "lib/check.go"},
+			want:    DiffItem{fPath: "lib/check.go"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -45,7 +45,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    DiffItem{filepath: "README.md"},
+			want:    DiffItem{fPath: "README.md"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -55,7 +55,7 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 82366e3..5fc99b9 100644",
 			},
-			want:    DiffItem{filepath: "TODO.md"},
+			want:    DiffItem{fPath: "TODO.md"},
 			wantErr: wantErr{false, false},
 		},
 		{
@@ -63,7 +63,7 @@ func TestDiffPush(t *testing.T) {
 			args: args{
 				in: "hello world",
 			},
-			want:    DiffItem{filepath: ""},
+			want:    DiffItem{fPath: ""},
 			wantErr: wantErr{true, true},
 		},
 		{
@@ -73,15 +73,15 @@ func TestDiffPush(t *testing.T) {
 					"\n" +
 					"index 08044af..098342c 100644",
 			},
-			want:    DiffItem{filepath: "cmd/diffence/main.go"},
+			want:    DiffItem{fPath: "cmd/diffence/main.go"},
 			wantErr: wantErr{false, false},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			filepath, errFilepath := extractFilePath(tt.args.in)
-			equals(t, tt.wantErr.filepath, errFilepath != nil)
-			equals(t, tt.want.filepath, filepath)
+			fPath, errFilepath := extractFilePath(tt.args.in)
+			equals(t, tt.wantErr.fPath, errFilepath != nil)
+			equals(t, tt.want.fPath, fPath)
 		})
 	}
 }

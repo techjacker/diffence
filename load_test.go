@@ -7,7 +7,7 @@ import (
 
 func Test_readRules(t *testing.T) {
 	type args struct {
-		filepath string
+		fPath string
 	}
 	tests := []struct {
 		name    string
@@ -17,7 +17,7 @@ func Test_readRules(t *testing.T) {
 	}{
 		{
 			name: "Read rules from file",
-			args: args{filepath: "test/fixtures/rules/rules.json"},
+			args: args{fPath: "test/fixtures/rules/rules.json"},
 			want: &[]Rule{
 				{
 					Caption:     "Contains word: password",
@@ -31,14 +31,14 @@ func Test_readRules(t *testing.T) {
 		},
 		{
 			name:    "Read rules from file",
-			args:    args{filepath: "test/fixtures/does_not_exist.json"},
+			args:    args{fPath: "test/fixtures/does_not_exist.json"},
 			want:    &[]Rule{},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := LoadRulesJSON(tt.args.filepath)
+			got, err := LoadRulesJSON(tt.args.fPath)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("LoadRulesJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return

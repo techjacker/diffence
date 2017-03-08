@@ -61,8 +61,8 @@ func TestScanDiffsWithBufioScanner(t *testing.T) {
 
 func TestSplitDiffs(t *testing.T) {
 	type args struct {
-		r io.Reader
-		// ignore []string
+		r      io.Reader
+		ignore []string
 	}
 
 	tests := []struct {
@@ -75,39 +75,39 @@ func TestSplitDiffs(t *testing.T) {
 			name: "SplitDiffs()",
 			args: args{r: getFixtureFile("test/fixtures/diffs/single.diff")},
 			want: []DiffItem{
-				{filepath: "README.md"},
+				{fPath: "README.md"},
 			},
 		},
 		{
 			name: "SplitDiffs()",
 			args: args{r: getFixtureFile("test/fixtures/diffs/multi.diff")},
 			want: []DiffItem{
-				{filepath: "TODO.md"},
-				{filepath: "systemdlogger/aws.py"},
-				{filepath: "systemdlogger/cloudwatch.py"},
-				{filepath: "tests/fixtures/config.json"},
-				{filepath: "tests/test_aws.py"},
-				{filepath: "tests/test_cloudwatch.py"},
-				{filepath: "tests/test_runner_integration.py"},
+				{fPath: "TODO.md"},
+				{fPath: "systemdlogger/aws.py"},
+				{fPath: "systemdlogger/cloudwatch.py"},
+				{fPath: "tests/fixtures/config.json"},
+				{fPath: "tests/test_aws.py"},
+				{fPath: "tests/test_cloudwatch.py"},
+				{fPath: "tests/test_runner_integration.py"},
 			},
 		},
 		{
 			name: "SplitDiffs()",
 			args: args{r: getFixtureFile("test/fixtures/diffs/logp.truncated.diff")},
 			want: []DiffItem{
-				{filepath: "README.md"},
-				{filepath: "TODO.md"},
-				{filepath: "check.go"},
-				{filepath: "results.go"},
+				{fPath: "README.md"},
+				{fPath: "TODO.md"},
+				{fPath: "check.go"},
+				{fPath: "results.go"},
 			},
 		},
 		{
 			name: "SplitDiffs()",
 			args: args{r: getFixtureFile("test/fixtures/diffs/longline.diff")},
 			want: []DiffItem{
-				{filepath: "web/src/main/resources/static/js/menu.js"},
-				{filepath: "web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js"},
-				{filepath: "web/src/main/resources/templates/layout.vm"},
+				{fPath: "web/src/main/resources/static/js/menu.js"},
+				{fPath: "web/src/main/resources/static/js/vendor/jquery-1.11.1.min.js"},
+				{fPath: "web/src/main/resources/templates/layout.vm"},
 			},
 		},
 		{
@@ -125,7 +125,40 @@ func TestSplitDiffs(t *testing.T) {
 				t.Fatalf("SplitDiffs threw error %#v", err)
 			}
 			for i, di := range d.Items {
-				equals(t, tt.want[i].filepath, di.filepath)
+				equals(t, tt.want[i].fPath, di.fPath)
+			}
+		})
+	}
+}
+
+func TestSplitLines(t *testing.T) {
+	type args struct {
+		r io.Reader
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "SplitDiffs()",
+			args: args{r: getFixtureFile("test/fixtures/ignore")},
+			want: []string{
+				"one",
+				"two",
+				"three",
+			},
+		},
+		{
+			name: "SplitDiffs() empty io.Reader",
+			args: args{bytes.NewBuffer([]byte{})},
+			want: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SplitLines(tt.args.r); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("SplitLines() = %v, want %v", got, tt.want)
 			}
 		})
 	}

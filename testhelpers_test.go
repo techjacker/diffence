@@ -12,11 +12,11 @@ import (
 	"testing"
 )
 
-func generateWantDiffFromFiles(filepathPath string) []DiffItem {
+func generateWantDiffFromFiles(fPathPath string) []DiffItem {
 	want := []DiffItem{}
-	filepathFile, _ := os.Open(filepathPath)
+	fPathFile, _ := os.Open(fPathPath)
 	r := io.MultiReader(
-		filepathFile,
+		fPathFile,
 	)
 	buffer := bytes.NewBuffer(make([]byte, 0))
 	i := 0
@@ -24,8 +24,8 @@ func generateWantDiffFromFiles(filepathPath string) []DiffItem {
 	scanner.Split(bufio.ScanLines)
 	for scanner.Scan() {
 		buffer.Write(scanner.Bytes())
-		filepath := buffer.String()
-		want = append(want, DiffItem{filepath: filepath})
+		fPath := buffer.String()
+		want = append(want, DiffItem{fPath: fPath})
 		i++
 		buffer.Reset()
 	}
