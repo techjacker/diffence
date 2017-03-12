@@ -4,10 +4,21 @@
 - Checks a git diff for passwords/secret keys accidentally committed
 - Golang 1.7+
 
-
+-----------------------------------------------------------
 ### Check the entire history of current branch for passwords/keys committed
 
 ```$ git log -p | diffence```
+
+-----------------------------------------------------------
+### Add false positives to `.secignore`
+
+```
+$ cat .secignore
+file/that/is/not/really/a/secret/but/looks/like/one/to/diffence
+these/pems/are/ok/*.pem
+```
+
+[See example in this repo](./.secignore).
 
 -----------------------------------------------------------
 ## Install
@@ -58,19 +69,10 @@ Type: match
 - [ ] Add option to use your own rules again file path/contents
 
 
-
 -----------------------------------------------------------
 ## Tests
 ```
 $ go test ./...
-```
-
------------------------------------------------------------
-## Release
-Update the vars in ```env.sh```.
-
-```shell
-$ release
 ```
 
 -----------------------------------------------------------

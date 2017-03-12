@@ -8,14 +8,27 @@ import (
 	"path/filepath"
 )
 
+// Matcher is an interface for matching against string inputs
 type Matcher interface {
 	Match(string) bool
 }
 
+// NewIgnorerFromFile will safely create an Ignorer whether the file exists or not
+func NewIgnorerFromFile(fPath string) *Ignorer {
+	return &Ignorer{getFileAsSlice(fPath)}
+}
+
+// NewIgnorer will create an Ignorer from a read stream
+func NewIgnorer(r io.Reader) *Ignorer {
+	return &Ignorer{splitLines(r)}
+}
+
+// Ignorer is used to exclude content in .secignore files
 type Ignorer struct {
 	patterns []string
 }
 
+// Match reports whether a filepath is listed in Ignorer.patterns[]string
 func (i Ignorer) Match(in string) bool {
 	for _, p := range i.patterns {
 		// http://golang-jp.org/pkg/path/filepath/#Match
@@ -26,23 +39,24 @@ func (i Ignorer) Match(in string) bool {
 	return false
 }
 
-func getFileContents(fPath string) []string {
-	return SplitLines(getFile(fPath))
+// getFileAsSlice returns the contents of a file as a slice of strings
+func getFileAsSlice(fPath string) []string {
+	return splitLines(getFile(fPath))
 }
 
 func getFile(fPath string) io.Reader {
-
-	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
+	if _, err := os.Stat(fPath); os.IsNotExist(err) {
 		return bytes.NewBuffer([]byte{})
 	}
-	f, err := os.Open(fPath) // path/to/whatever exists
+	f, err := os.Open(fPath) // /path/to/whatever exists
 	if err != nil {
 		return bytes.NewBuffer([]byte{})
 	}
 	return f
 }
 
-func SplitLines(r io.Reader) []string {
+// Split
+func splitLines(r io.Reader) []string {
 	l := []string{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {

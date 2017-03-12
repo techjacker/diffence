@@ -9,8 +9,9 @@ import (
 
 func TestCheckDiffs(t *testing.T) {
 	type args struct {
-		r     io.Reader
-		rules *[]Rule
+		r       io.Reader
+		rules   *[]Rule
+		ignorer Matcher
 	}
 	ruleSingle := getRuleFile("test/fixtures/rules/rules.json")
 	ruleMulti := getRuleFile("test/fixtures/rules/rules_multi.json")
@@ -77,6 +78,20 @@ func TestCheckDiffs(t *testing.T) {
 			},
 		},
 		{
+			name: "Recognises an offensive diff - but excludes file in ignorer",
+			args: args{
+				r:       getFixtureFile("test/fixtures/diffs/multi_fail.diff"),
+				rules:   ruleMulti,
+				ignorer: Ignorer{patterns: []string{"another/file/*.pem"}},
+			},
+			want: Result{
+				Matched: true,
+				MatchedRules: MatchedRules{
+					"path/to/password.txt": []Rule{(*ruleMulti)[0]},
+				},
+			},
+		},
+		{
 			name: "Recognises non diff text",
 			args: args{
 				r:     bytes.NewReader([]byte("not a diff")),
@@ -90,7 +105,7 @@ func TestCheckDiffs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dc := DiffChecker{Rules: tt.args.rules}
+			dc := DiffChecker{Rules: tt.args.rules, Ignorer: tt.args.ignorer}
 			got, _ := dc.Check(tt.args.r)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CheckDiffs(): %s\n\n got:%#v\n\nwant: %#v", tt.name, got, tt.want)

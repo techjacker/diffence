@@ -10,9 +10,7 @@ type Checker interface {
 // DiffChecker checks an io.Reader for matches against the supplied ruleset
 type DiffChecker struct {
 	Rules   *[]Rule
-	ignorer Matcher
-	// ignorePatterns []string
-	// ignore io.Reader
+	Ignorer Matcher
 }
 
 // Check is a clean syntax but memory inefficient
@@ -24,7 +22,7 @@ func (dc DiffChecker) Check(r io.Reader) (Result, error) {
 		MatchedRules: make(map[string][]Rule),
 	}
 
-	diff := Diff{ignorer: dc.ignorer}
+	diff := Diff{ignorer: dc.Ignorer}
 	err := SplitDiffs(r, &diff)
 
 	for _, d := range diff.Items {

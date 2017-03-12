@@ -37,7 +37,6 @@ func SplitDiffs(r io.Reader, l List) error {
 			continue
 		}
 		l.Push(raw)
-		// l.Push(extractFilePath(raw))
 		buffer.Reset()
 	}
 

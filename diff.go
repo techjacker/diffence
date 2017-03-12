@@ -18,11 +18,6 @@ type List interface {
 type DiffItem struct {
 	raw   string
 	fPath string
-	// w      io.Writer
-	// fPath fmt.Stringer
-	// addedText string
-	// match        bool
-	// matchedRules []rule
 }
 
 // Diff is a list of split diffs
@@ -40,10 +35,9 @@ func (d *Diff) Push(s string) {
 		return
 	}
 
-	// fmt.Printf("%s\n", d.ignorer.Match(fPath))
-	// if d.ignorer.Match(fPath) == true {
-	// 	return
-	// }
+	if d.ignorer != nil && d.ignorer.Match(fPath) == true {
+		return
+	}
 
 	d.Items = append(d.Items, DiffItem{
 		raw:   s,

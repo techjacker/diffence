@@ -130,36 +130,3 @@ func TestSplitDiffs(t *testing.T) {
 		})
 	}
 }
-
-func TestSplitLines(t *testing.T) {
-	type args struct {
-		r io.Reader
-	}
-	tests := []struct {
-		name string
-		args args
-		want []string
-	}{
-		{
-			name: "SplitDiffs()",
-			args: args{r: getFixtureFile("test/fixtures/ignore")},
-			want: []string{
-				"one",
-				"two",
-				"three",
-			},
-		},
-		{
-			name: "SplitDiffs() empty io.Reader",
-			args: args{bytes.NewBuffer([]byte{})},
-			want: []string{},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := SplitLines(tt.args.r); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SplitLines() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
