@@ -57,6 +57,9 @@ func getFile(fPath string) io.Reader {
 
 // Split
 func splitLines(r io.Reader) []string {
+	if v, ok := r.(io.ReadCloser); ok == true {
+		defer v.Close()
+	}
 	l := []string{}
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
