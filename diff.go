@@ -35,7 +35,7 @@ func (d *Diff) Push(s string) {
 		return
 	}
 
-	if d.ignorer != nil && d.ignorer.Match(fPath) == true {
+	if d.ignorer != nil && d.ignorer.Match(fPath) {
 		return
 	}
 

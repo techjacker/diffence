@@ -18,10 +18,9 @@ func TestCheckDiffs(t *testing.T) {
 	rulesExtended := getRuleFile("test/fixtures/rules/rules_extended_regex.json")
 
 	tests := []struct {
-		name    string
-		args    args
-		want    Result
-		wantErr bool
+		name string
+		args args
+		want Result
 	}{
 		{
 			name: "Recognises an offensive diff - sqlpassword.diff",

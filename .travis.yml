@@ -8,6 +8,9 @@ go:
 before_install:
   - go get -u github.com/golang/lint/golint
   - go get -u github.com/mvdan/interfacer/cmd/interfacer
+  - go get -u honnef.co/go/tools/cmd/staticcheck
+  - go get -u honnef.co/go/tools/cmd/gosimple
+  - go get -u honnef.co/go/tools/cmd/unused
 
 script:
  - make lint

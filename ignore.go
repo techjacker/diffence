@@ -32,7 +32,7 @@ type Ignorer struct {
 func (i Ignorer) Match(in string) bool {
 	for _, p := range i.patterns {
 		// http://golang-jp.org/pkg/path/filepath/#Match
-		if matched, _ := filepath.Match(p, in); matched == true {
+		if matched, _ := filepath.Match(p, in); matched {
 			return true
 		}
 	}
@@ -57,7 +57,7 @@ func getFile(fPath string) io.Reader {
 
 // Split
 func splitLines(r io.Reader) []string {
-	if v, ok := r.(io.ReadCloser); ok == true {
+	if v, ok := r.(io.ReadCloser); ok {
 		defer v.Close()
 	}
 	l := []string{}

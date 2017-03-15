@@ -61,15 +61,13 @@ func TestScanDiffsWithBufioScanner(t *testing.T) {
 
 func TestSplitDiffs(t *testing.T) {
 	type args struct {
-		r      io.Reader
-		ignore []string
+		r io.Reader
 	}
 
 	tests := []struct {
-		name     string
-		args     args
-		want     []DiffItem
-		lenDiffs int
+		name string
+		args args
+		want []DiffItem
 	}{
 		{
 			name: "SplitDiffs()",

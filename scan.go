@@ -31,7 +31,7 @@ func SplitDiffs(r io.Reader, l List) error {
 		buffer.Write(scanner.Bytes())
 		raw := buffer.String()
 		// strip cruft from BOF (Beginning Of File) if necessary
-		if BOF == true && !strings.HasPrefix(raw, diffSep) {
+		if BOF && !strings.HasPrefix(raw, diffSep) {
 			BOF = false
 			buffer.Reset()
 			continue
