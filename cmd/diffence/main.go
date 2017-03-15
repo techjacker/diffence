@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -47,21 +46,11 @@ func main() {
 		return
 	}
 
-	matches := res.Matches()
-	if matches > 0 {
-		i := 1
-		fmt.Printf("Diff contains %d offenses\n\n", matches)
-		for filename, rule := range res.MatchedRules {
-			fmt.Printf("------------------\n")
-			fmt.Printf("Violation %d\n", i)
-			fmt.Printf("File: %s\n", filename)
-			fmt.Printf("Reason: %#v\n\n", rule[0].Caption)
-			i++
-		}
-		// finding violations constitutes an error
-		os.Exit(1)
-		return
+	// log results to STDOUT/STDERR
+	logger := log.New(os.Stdout, "", 0x0)
+	if res.Matches() > 0 {
+		log.SetOutput(os.Stderr)
+		defer os.Exit(1)
 	}
-	fmt.Printf("Diff contains NO offenses\n\n")
-	os.Exit(0)
+	res.Log(logger)
 }

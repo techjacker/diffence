@@ -1,5 +1,9 @@
 package diffence
 
+// MatchedRules is slice of matched rules for each file in diff
+// [fPath] => Rule{rule1, rule2}
+type MatchedRules map[string][]Rule
+
 // Results is a slice of Result structs
 type Results []Result
 
@@ -26,6 +30,20 @@ func (r Result) Matches() int {
 	return len(r.MatchedRules)
 }
 
-// MatchedRules is slice of matched rules for each file in diff
-// [fPath] => Rule{rule1, rule2}
-type MatchedRules map[string][]Rule
+// Log prints the results of ma
+func (r Result) Log(l Logger) {
+	matches := r.Matches()
+	if matches < 1 {
+		l.Printf("Diff contains NO offenses\n\n")
+		return
+	}
+	i := 1
+	l.Printf("Diff contains %d offenses\n\n", matches)
+	for filename, rule := range r.MatchedRules {
+		l.Printf("------------------\n")
+		l.Printf("Violation %d\n", i)
+		l.Printf("File: %s\n", filename)
+		l.Printf("Reason: %#v\n\n", rule[0].Caption)
+		i++
+	}
+}
