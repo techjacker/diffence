@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/techjacker/diffence.svg?branch=master)](https://travis-ci.org/techjacker/diffence)
+[![Go Report Card](https://goreportcard.com/badge/github.com/techjacker/diffence)](https://goreportcard.com/report/github.com/techjacker/diffence)
 
 # diffence
 - Checks a git diff for passwords/secret keys accidentally committed
