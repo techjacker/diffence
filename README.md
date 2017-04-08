@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/techjacker/diffence.svg?branch=master)](https://travis-ci.org/techjacker/diffence)
+[![Go Report Card](https://goreportcard.com/badge/github.com/techjacker/diffence)](https://goreportcard.com/report/github.com/techjacker/diffence)
 
 # diffence
 - Checks a git diff for passwords/secret keys accidentally committed
@@ -7,8 +8,22 @@
 -----------------------------------------------------------
 ### Check the entire history of current branch for passwords/keys committed
 
+
+```$ git log -p --full-diff | diffence```
 ```$ git log -p | diffence```
 
+
+### Git Diff Formats
+```
+Path names in extended headers do not include the a/ and b/ prefixes.
+Only supports regular diff formats.
+```
+
+### bufio.NewScanner Limitations
+```
+// Programs that need more control over error handling or large tokens,
+// or must run sequential scans on a reader, should use bufio.Reader instead.
+```
 -----------------------------------------------------------
 ### Add false positives to `.secignore`
 

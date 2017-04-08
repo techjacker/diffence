@@ -16,8 +16,9 @@ type List interface {
 
 // DiffItem is a diff struct for an inidividual file
 type DiffItem struct {
-	raw   string
-	fPath string
+	raw    string
+	fPath  string
+	commit string
 }
 
 // Diff is a list of split diffs
@@ -29,6 +30,11 @@ type Diff struct {
 
 // Push a diff on to the list
 func (d *Diff) Push(s string) {
+
+	if beginsWithCommitID(s) {
+		commitHeader, s := extractCommitHeader(s)
+	}
+
 	fPath, err := extractFilePath(s)
 	if err != nil {
 		d.Error = err
@@ -40,9 +46,25 @@ func (d *Diff) Push(s string) {
 	}
 
 	d.Items = append(d.Items, DiffItem{
-		raw:   s,
-		fPath: fPath,
+		raw:    s,
+		fPath:  fPath,
+		commit: commitHeader,
 	})
+}
+
+// split out logic from scan.go
+func beginsWithCommitID(s string) bool {
+	return true
+}
+
+// split out logic from scan.go
+func splitDiffCommitHeader(s string) (string, string) {
+	return ""
+}
+
+// split out logic from scan.go
+func extractCommitHash(s string) string {
+	return ""
 }
 
 func extractFilePath(in string) (string, error) {
