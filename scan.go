@@ -45,8 +45,10 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 						if tokenEnd < 0 {
 							tokenEnd = 0
 						}
-						return prevNewLineIndex, dropCR(data[0:tokenEnd]), nil
-						// return prevNewLineIndex, dropCR(data[0 : k+i]), nil
+						// return prevNewLineIndex, dropCR(data[0:tokenEnd]), nil
+						// advance = ends = new line BELOW git diff header
+						// prev token = ends = new line of git diff header
+						return newLineIndex, dropCR(data[0 : k+i]), nil
 					}
 				}
 				return newLineIndex, dropCR(data[0 : k+i]), nil
