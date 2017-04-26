@@ -1,16 +1,25 @@
 package diffence
 
-import (
-	"bytes"
-	"encoding/hex"
-	"unicode"
-
-	"github.com/y0ssar1an/q"
-)
+import "bytes"
 
 const (
 	diffSep = "diff --git a"
 )
+
+func isDiffHeader(data *[]byte, newLineIndex int) bool {
+	diffSepLen := len(diffSep)
+	diffSepEndIndex := newLineIndex + diffSepLen
+	dataLen := len(*data) - 1
+	return diffSepEndIndex < dataLen && string((*data)[newLineIndex:diffSepEndIndex]) == diffSep
+}
+
+func getTokenEnd(prevNewLineIndex int) int {
+	tokenEnd := prevNewLineIndex - 1
+	if tokenEnd >= 0 {
+		return tokenEnd
+	}
+	return 0
+}
 
 // ScanDiffs splits on the diff of an inidividual file
 func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
@@ -18,44 +27,47 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		return 0, nil, nil
 	}
 
-	k, newLineIndex, prevNewLineIndex, diffSepEndIndex := 0, 0, 0, 0
+	// k, newLineIndex, prevNewLineIndex := 0, 0, 0
+	k, newLineIndex := 0, 0
 	dataLen := len(data) - 1
-	diffSepLen := len(diffSep)
 
 	// loop until no more bytes left to read in this chunk of data
 	for k < dataLen {
-		// find the next newline
+
+		///////////////////////////
+		// find the next newline //
+		///////////////////////////
 		if i := bytes.IndexByte(data[k:], '\n'); i >= 0 {
-			// how far advanced already (k)
+			// k = index of scanned through data so far
 			// index after last \n char (+ i)
 			// start at next byte (+ 1)
 			newLineIndex = k + i + 1
-			diffSepEndIndex = newLineIndex + diffSepLen
-			if diffSepEndIndex < dataLen && string(data[newLineIndex:diffSepEndIndex]) == diffSep {
-				if prevNewLineIndex > 0 {
 
-					hashEnd := bytes.IndexFunc(data[prevNewLineIndex:newLineIndex], unicode.IsSpace)
-					commitHash := string(data[prevNewLineIndex : prevNewLineIndex+hashEnd])
-					_, e := hex.DecodeString(commitHash)
-					if e == nil {
-						// q.Q(commitHash)
-						q.Q(prevNewLineIndex)
-						// q.Q(dataLen)
-						tokenEnd := prevNewLineIndex - 1
-						if tokenEnd < 0 {
-							tokenEnd = 0
-						}
-						// return prevNewLineIndex, dropCR(data[0:tokenEnd]), nil
-						// advance = ends = new line BELOW git diff header
-						// prev token = ends = new line of git diff header
-						return newLineIndex, dropCR(data[0 : k+i]), nil
-					}
-				}
+			/////////////////////////////////
+			// is this line a diff header? //
+			/////////////////////////////////
+			if isDiffHeader(&data, newLineIndex) {
+
+				/////////////////////////////////////////////////////////
+				// is the line before the diff header a commit header? //
+				/////////////////////////////////////////////////////////
+				// if prevNewLineIndex > 0 && beginsWithHash(string(data[prevNewLineIndex:newLineIndex])) {
+				// 	// advance = ends = new line BELOW git diff header
+				// 	// prev token = ends = new line of git diff header
+				// 	return newLineIndex, dropCR(data[0:getTokenEnd(prevNewLineIndex)]), nil
+				// }
 				return newLineIndex, dropCR(data[0 : k+i]), nil
 			}
-			prevNewLineIndex = newLineIndex
-			// prevNewLineIndex = newLineIndex - 1
+			////////////////////////////////////////////////////////////////////
+			// keep track of last new line - it could be the commit ID header //
+			////////////////////////////////////////////////////////////////////
+			// prevNewLineIndex = newLineIndex
+
+			////////////////////////////////////////////////////////////////
+			// keep advancing through data -> k = index of scanned so far //
+			////////////////////////////////////////////////////////////////
 			k += i + 1
+
 		} else {
 			k = dataLen
 		}

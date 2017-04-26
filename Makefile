@@ -30,6 +30,10 @@ diff:
 test:
 	@go test
 
+# @go test -test.run "TestSplitDiffs"
+test-single:
+	@go test -test.run "Test_ScanDiffs" -test.v
+
 test-cover:
 	@go test -cover
 

@@ -1,8 +1,10 @@
 package diffence
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -31,11 +33,19 @@ type Diff struct {
 // Push a diff on to the list
 func (d *Diff) Push(s string) {
 
-	if beginsWithCommitID(s) {
-		commitHeader, s := extractCommitHeader(s)
+	// var commitHeader, diffBody string
+	var commitHeader string
+
+	if beginsWithHash(s) {
+		commitHeader, s = split(s, "\n")
+		// commitHeader, diffBody = split(s, "\n")
 	}
+	// println("------------")
+	// println("\ncommitHeader", commitHeader)
+	// println("\ndiffBody", diffBody)
 
 	fPath, err := extractFilePath(s)
+	// fPath, err := extractFilePath(diffBody)
 	if err != nil {
 		d.Error = err
 		return
@@ -46,6 +56,7 @@ func (d *Diff) Push(s string) {
 	}
 
 	d.Items = append(d.Items, DiffItem{
+		// raw: diffBody,
 		raw:    s,
 		fPath:  fPath,
 		commit: commitHeader,
@@ -53,18 +64,36 @@ func (d *Diff) Push(s string) {
 }
 
 // split out logic from scan.go
-func beginsWithCommitID(s string) bool {
-	return true
+func beginsWithHash(s string) bool {
+	if len(s) < 1 {
+		return false
+	}
+	hashEnd := strings.IndexFunc(s, unicode.IsSpace)
+	if hashEnd < 1 {
+		return false
+	}
+	commitHash := s[:hashEnd]
+	_, e := hex.DecodeString(commitHash)
+	if e == nil {
+		return true
+	}
+	return false
 }
 
-// split out logic from scan.go
-func splitDiffCommitHeader(s string) (string, string) {
-	return ""
-}
-
-// split out logic from scan.go
-func extractCommitHash(s string) string {
-	return ""
+/////////////////////////////////////////
+/////////////////////////////////////////
+/////////////////////////////////////////
+func split(s, sep string) (string, string) {
+	// Empty string should just return empty
+	if len(s) == 0 {
+		return s, s
+	}
+	slice := strings.SplitN(s, sep, 2)
+	// Incase no separator was present
+	if len(slice) == 1 {
+		return slice[0], ""
+	}
+	return slice[0], slice[1]
 }
 
 func extractFilePath(in string) (string, error) {

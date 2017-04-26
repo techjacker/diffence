@@ -7,11 +7,6 @@ import (
 	"strings"
 )
 
-// split out logic from scan.go
-func beginsWithCommitID(s string) bool {
-	return true
-}
-
 // SplitDiffs splits a single diff txt into an individual DiffItem for each file changed
 func SplitDiffs(r io.Reader, l List) error {
 
@@ -32,7 +27,7 @@ func SplitDiffs(r io.Reader, l List) error {
 		raw := buffer.String()
 		// strip cruft from BOF (Beginning Of File) if necessary
 		// if BOF && !strings.HasPrefix(raw, diffSep) {
-		if BOF && !(strings.HasPrefix(raw, diffSep) || beginsWithCommitID(raw)) {
+		if BOF && !(strings.HasPrefix(raw, diffSep) || beginsWithHash(raw)) {
 			BOF = false
 			buffer.Reset()
 			continue
