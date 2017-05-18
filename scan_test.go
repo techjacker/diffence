@@ -27,6 +27,8 @@ func Test_ScanDiffs(t *testing.T) {
 						"\n" +
 						"index 82366e3..5fc99b9 100644" +
 						"\n" +
+						"22949087b8e0c9179345e8dbb7b6705b49c93c88 Does something else" +
+						"\n" +
 						"diff --git a/TODO.md b/TODO.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644",
@@ -41,7 +43,9 @@ func Test_ScanDiffs(t *testing.T) {
 						"index 82366e3..5fc99b9 100644",
 				),
 				[]byte(
-					"diff --git a/TODO.md b/TODO.md" +
+					"22949087b8e0c9179345e8dbb7b6705b49c93c88 Does something else" +
+						"\n" +
+						"diff --git a/TODO.md b/TODO.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644",
 				),
@@ -51,23 +55,23 @@ func Test_ScanDiffs(t *testing.T) {
 			name: "ScanDiffs() split fn",
 			args: args{r: bytes.NewReader(
 				[]byte(
-					"diff --git a/README.md b/README.md" +
+					"diff --git a/NOHASH.md b/NOHASH.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644" +
 						"\n" +
-						"diff --git a/TODO.md b/TODO.md" +
+						"diff --git a/STILL.md b/STILL.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644",
 				),
 			)},
 			want: [][]byte{
 				[]byte(
-					"diff --git a/README.md b/README.md" +
+					"diff --git a/NOHASH.md b/NOHASH.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644",
 				),
 				[]byte(
-					"diff --git a/TODO.md b/TODO.md" +
+					"diff --git a/STILL.md b/STILL.md" +
 						"\n" +
 						"index 82366e3..5fc99b9 100644",
 				),
@@ -83,11 +87,18 @@ func Test_ScanDiffs(t *testing.T) {
 				got = append(got, scanner.Bytes())
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				// println("got", string(got[...]))
-				t.Errorf("ScanDiffs() \n\nGOT: %s, \n\nWANT: %s", got, tt.want)
+				t.Error("ScanDiffs()")
+				// t.Errorf("\n\nFull::: \n\nGOT: %s\n\nWANT: %s", got, tt.want)
+				t.Log("GOT::::")
+				for i, g := range got {
+					t.Logf("%d: %s\n", i, g)
+				}
+				t.Log("WANT::::")
+				for i, g := range tt.want {
+					t.Logf("%d: %s\n", i, g)
+				}
+
 			}
-			// q.Q(string(got[0]))
-			// q.Q(string(got[1]))
 		})
 	}
 }
