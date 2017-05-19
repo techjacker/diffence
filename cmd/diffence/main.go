@@ -12,7 +12,6 @@ import (
 func main() {
 
 	rPath := flag.String("rules", "", "path to rules in JSON format")
-	// rPath := flag.String("rules", "test/fixtures/rules/gitrob.json", "path to rules in JSON format")
 	flag.Parse()
 
 	info, _ := os.Stdin.Stat()

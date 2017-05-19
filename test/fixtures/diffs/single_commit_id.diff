@@ -1,0 +1,158 @@
+17949087b8e0c9179345e8dbb7b6705b49c93c77 Adds results logger
+diff --git a/README.md b/README.md
+index 82366e3..5fc99b9 100644
+--- a/README.md
++++ b/README.md
+@@ -1,7 +1,8 @@
+ # systemdlogger
+
+-- Exports systemd logs to an external service, eg cloudwatch, elasticsearch.
+-- Use with a cron job.
++- Lightweight, python only, logstash alternative
++- Exports systemd journald logs to an external service, eg cloudwatch, elasticsearch
++- Use with a cron job
+ - Python 3+
+7794f2a7e0c35774f531a74280534374075a9c9e Adds Checker and Results
+diff --git a/check.go b/check.go
+index 15f0259..448acc0 100644
+--- a/check.go
++++ b/check.go
+@@ -2,14 +2,38 @@ package diffence
+ 
+ import "io"
+ 
+-// Results is hash of results matched for each filepath in a git diff
++// MatchedRules is slice of matched rules for each file in diff
+ // [filepath] => Rule{rule1, rule2}
+-type Results map[string][]Rule
++type MatchedRules map[string][]Rule
+ 
+-// CheckDiffs is a clean syntax, inefficient way of
+-// finding diffs that match the supplied rules
+-func CheckDiffs(r io.Reader, rules *[]Rule) (Results, error) {
+-	res := Results{}
++// Results is a slice of Result structs
++type Results []Result
++
++// Result compiles the results of matched rules for a diff
++type Result struct {
++	// Have any of the files matches against the rules?
++	Matched      bool
++	MatchedRules MatchedRules
++}
++
++// Checker checks diffs for rule violations
++type Checker interface {
++	Check(io.Reader) (Result, error)
++}
++
++// DiffChecker checks an io.Reader for matches against the supplied ruleset
++type DiffChecker struct {
++	Rules *[]Rule
++}
++
++// Check is a clean syntax but memory inefficient
++// method for finding diffs that match the supplied rules
++// (use an array instead of a map for better performance)
++func (dc DiffChecker) Check(r io.Reader) (Result, error) {
++	res := Result{
++		Matched:      false,
++		MatchedRules: make(map[string][]Rule),
++	}
+ 
+ 	diffs, err := SplitDiffs(r)
+ 	if err != nil || len(diffs) < 1 {
+@@ -17,10 +41,13 @@ func CheckDiffs(r io.Reader, rules *[]Rule) (Results, error) {
+ 	}
+ 
+ 	for _, d := range diffs {
+-		res[d.filePath] = []Rule{}
+-		for _, r := range *rules {
++		for _, r := range *dc.Rules {
+ 			if r.Match(d.filePath) {
+-				res[d.filePath] = append(res[d.filePath], r)
++				res.Matched = true
++				if _, ok := res.MatchedRules[d.filePath]; !ok {
++					res.MatchedRules[d.filePath] = []Rule{}
++				}
++				res.MatchedRules[d.filePath] = append(res.MatchedRules[d.filePath], r)
+ 			}
+ 		}
+ 	}
+diff --git a/check_test.go b/check_test.go
+index 0b611c3..2519018 100644
+--- a/check_test.go
++++ b/check_test.go
+@@ -19,7 +19,7 @@ func TestCheckDiffs(t *testing.T) {
+ 	tests := []struct {
+ 		name    string
+ 		args    args
+-		want    Results
++		want    Result
+ 		wantErr bool
+ 	}{
+ 		{
+@@ -28,8 +28,11 @@ func TestCheckDiffs(t *testing.T) {
+ 				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
+ 				rules: ruleSingle,
+ 			},
+-			want: Results{
+-				"path/to/password.txt": *ruleSingle,
++			want: Result{
++				Matched: true,
++				MatchedRules: MatchedRules{
++					"path/to/password.txt": *ruleSingle,
++				},
+ 			},
+ 			wantErr: false,
+ 		},
+@@ -39,8 +42,11 @@ func TestCheckDiffs(t *testing.T) {
+ 				r:     getFixtureFile("test/fixtures/diffs/single_fail.diff"),
+ 				rules: ruleMulti,
+ 			},
+-			want: Results{
+-				"path/to/password.txt": *ruleSingle,
++			want: Result{
++				Matched: true,
++				MatchedRules: MatchedRules{
++					"path/to/password.txt": *ruleSingle,
++				},
+ 			},
+ 			wantErr: false,
+ 		},
+@@ -50,9 +56,12 @@ func TestCheckDiffs(t *testing.T) {
+ 				r:     getFixtureFile("test/fixtures/diffs/multi_fail.diff"),
+ 				rules: ruleMulti,
+ 			},
+-			want: Results{
+-				"path/to/password.txt": []Rule{(*ruleMulti)[0]},
+-				"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
++			want: Result{
++				Matched: true,
++				MatchedRules: MatchedRules{
++					"path/to/password.txt": []Rule{(*ruleMulti)[0]},
++					"another/file/aws.pem": []Rule{(*ruleMulti)[1]},
++				},
+ 			},
+ 			wantErr: false,
+ 		},
+@@ -62,13 +71,17 @@ func TestCheckDiffs(t *testing.T) {
+ 				r:     bytes.NewReader([]byte("not a diff")),
+ 				rules: ruleMulti,
+ 			},
+-			want:    Results{},
++			want: Result{
++				Matched:      false,
++				MatchedRules: MatchedRules{},
++			},
+ 			wantErr: true,
+ 		},
+ 	}
+ 	for _, tt := range tests {
+ 		t.Run(tt.name, func(t *testing.T) {
+-			got, err := CheckDiffs(tt.args.r, tt.args.rules)
++			dc := DiffChecker{tt.args.rules}
++			got, err := dc.Check(tt.args.r)
+ 			if (err != nil) != tt.wantErr {
+ 				t.Errorf("CheckDiffs() error = %v, wantErr %v", err, tt.wantErr)
+ 				return

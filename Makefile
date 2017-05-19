@@ -5,6 +5,9 @@ COMMIT_ID = 94c52865e3b449ca594d09995b99efc28a24c53d
 RULES_DIR = test/fixtures/rules
 RULES_URL = https://raw.githubusercontent.com/michenriksen/gitrob/master/signatures.json
 
+SINGLE_TEST = "TestSplitDiffs"
+# SINGLE_TEST = "Test_ScanDiffs"
+
 install:
 	@go install -race ./cmd/diffence
 
@@ -29,6 +32,9 @@ diff:
 
 test:
 	@go test
+
+test-single:
+	@go test -test.run $(SINGLE_TEST)
 
 test-cover:
 	@go test -cover

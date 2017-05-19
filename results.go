@@ -39,9 +39,13 @@ func (r Result) Log(l Logger) {
 	}
 	i := 1
 	l.Printf("Diff contains %d offenses\n\n", matches)
-	for filename, rule := range r.MatchedRules {
+	for diffKey, rule := range r.MatchedRules {
 		l.Printf("------------------\n")
 		l.Printf("Violation %d\n", i)
+		commit, filename := SplitDiffHashKey(diffKey)
+		if commit != "" {
+			l.Printf("Commit: %s\n", commit)
+		}
 		l.Printf("File: %s\n", filename)
 		l.Printf("Reason: %#v\n\n", rule[0].Caption)
 		i++

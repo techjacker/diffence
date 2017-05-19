@@ -31,8 +31,8 @@ func TestCheckDiffs(t *testing.T) {
 			want: Result{
 				Matched: true,
 				MatchedRules: MatchedRules{
-					"web/src/main/resources/db/migration/V0_4__AdminPassword.sql": *rulesExtended,
-					"web/src/main/resources/db/migration/V0_2__SeedData.sql":      []Rule{(*rulesExtended)[0]},
+					"6f41b9b0a8150e165cd297ae3e00129766cf8a9b:web/src/main/resources/db/migration/V0_4__AdminPassword.sql": *rulesExtended,
+					"4cc087a1b4731d1017844cc86323df43068b0409:web/src/main/resources/db/migration/V0_2__SeedData.sql":      []Rule{(*rulesExtended)[0]},
 				},
 			},
 		},
