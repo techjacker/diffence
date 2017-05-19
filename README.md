@@ -7,23 +7,26 @@
 
 -----------------------------------------------------------
 ### Check the entire history of current branch for passwords/keys committed
-
-
-```$ git log -p --full-diff | diffence```
 ```$ git log -p | diffence```
 
+#### Example
+```
+$ git log -p --full-diff | diffence
 
-### Git Diff Formats
-```
-Path names in extended headers do not include the a/ and b/ prefixes.
-Only supports regular diff formats.
+------------------
+Violation 1
+Commit: 4cc087a1b4731d1017844cc86323df43068b0409
+File: web/src/db/seed.sql
+Reason: "SQL dump file"
+
+------------------
+Violation 2
+Commit: 142e6019248c0d53a5240242ed1a75c0cc110a0b
+File: config/passwords.ini
+Reason: "Contains word: password"
 ```
 
-### bufio.NewScanner Limitations
-```
-// Programs that need more control over error handling or large tokens,
-// or must run sequential scans on a reader, should use bufio.Reader instead.
-```
+
 -----------------------------------------------------------
 ### Add false positives to `.secignore`
 
