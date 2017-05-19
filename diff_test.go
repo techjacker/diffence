@@ -35,7 +35,7 @@ func TestDiffPush(t *testing.T) {
 					"index 82366e3..5fc99b9 100644",
 			},
 			want: DiffItem{
-				commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77 Adds results logger",
+				commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77",
 				fPath:  "web/src/main/resources/db/migration/V0_4__AdminPassword.sql",
 			},
 		},

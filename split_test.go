@@ -21,15 +21,15 @@ func TestSplitDiffs(t *testing.T) {
 			want: []DiffItem{
 				{
 					fPath:  "README.md",
-					commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77 Adds results logger",
+					commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77",
 				},
 				{
 					fPath:  "check.go",
-					commit: "7794f2a7e0c35774f531a74280534374075a9c9e Adds Checker and Results",
+					commit: "7794f2a7e0c35774f531a74280534374075a9c9e",
 				},
 				{
 					fPath:  "check_test.go",
-					commit: "7794f2a7e0c35774f531a74280534374075a9c9e Adds Checker and Results",
+					commit: "7794f2a7e0c35774f531a74280534374075a9c9e",
 				},
 			},
 		},
@@ -68,39 +68,39 @@ func TestSplitDiffs(t *testing.T) {
 			want: []DiffItem{
 				{
 					fPath:  "README.md",
-					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b",
 				},
 				{
 					fPath:  "TODO.md",
-					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b",
 				},
 				{
 					fPath:  "check.go",
-					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b",
 				},
 				{
 					fPath:  "results.go",
-					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b",
 				},
 				{
 					fPath:  "LICENSE",
-					commit: "50bf1cdde42823e11e78a1026e3a7cfc7bc78e2f Adds MIT License",
+					commit: "50bf1cdde42823e11e78a1026e3a7cfc7bc78e2f",
 				},
 				{
 					fPath:  ".realize/realize.yaml",
-					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a",
 				},
 				{
 					fPath:  "TODO.md",
-					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a",
 				},
 				{
 					fPath:  "check.go",
-					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a",
 				},
 				{
 					fPath:  "check_test.go",
-					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a",
 				},
 			},
 		},

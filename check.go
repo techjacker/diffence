@@ -29,10 +29,11 @@ func (dc DiffChecker) Check(r io.Reader) (Result, error) {
 		for _, r := range *dc.Rules {
 			if r.Match(d.fPath) {
 				res.Matched = true
-				if _, ok := res.MatchedRules[d.fPath]; !ok {
-					res.MatchedRules[d.fPath] = []Rule{}
+
+				if _, ok := res.MatchedRules[d.GetHashKey()]; !ok {
+					res.MatchedRules[d.GetHashKey()] = []Rule{}
 				}
-				res.MatchedRules[d.fPath] = append(res.MatchedRules[d.fPath], r)
+				res.MatchedRules[d.GetHashKey()] = append(res.MatchedRules[d.GetHashKey()], r)
 			}
 		}
 	}
