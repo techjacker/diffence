@@ -25,9 +25,9 @@ type DiffItem struct {
 
 // GetHashKey returns the hash key identifier for the diff
 func (d *DiffItem) GetHashKey() string {
-	// if d.commit != "" {
-	// 	return fmt.Sprintf("%s:%s", d.commit, d.fPath)
-	// }
+	if d.commit != "" {
+		return fmt.Sprintf("%s:%s", d.commit, d.fPath)
+	}
 	return d.fPath
 }
 
