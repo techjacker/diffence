@@ -31,7 +31,7 @@ func (d *DiffItem) GetHashKey() string {
 	return d.fPath
 }
 
-// SplitHashKey splits a DiffItem's hash key
+// SplitDiffHashKey splits a DiffItem's hash key
 func SplitDiffHashKey(s string) (string, string) {
 	parts := strings.Split(s, ":")
 	if len(parts) > 1 {
@@ -92,15 +92,9 @@ func beginsWithHash(s string) bool {
 	}
 	commitHash := s[:hashEnd]
 	_, e := hex.DecodeString(commitHash)
-	if e == nil {
-		return true
-	}
-	return false
+	return e == nil
 }
 
-/////////////////////////////////////////
-/////////////////////////////////////////
-/////////////////////////////////////////
 func split(s, sep string) (string, string) {
 	// Empty string should just return empty
 	if len(s) == 0 {
