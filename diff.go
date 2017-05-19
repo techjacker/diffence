@@ -31,6 +31,15 @@ func (d *DiffItem) GetHashKey() string {
 	return d.fPath
 }
 
+// SplitHashKey splits a DiffItem's hash key
+func SplitDiffHashKey(s string) (string, string) {
+	parts := strings.Split(s, ":")
+	if len(parts) > 1 {
+		return parts[0], parts[1]
+	}
+	return "", s
+}
+
 // Diff is a list of split diffs
 type Diff struct {
 	ignorer   Matcher
