@@ -46,10 +46,6 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 			if isDiffHeader(&data, newLineIndex) {
 				// if previous line does not begin with a hash then separate on diff headers
-				// BUG: cannot use zero starting index
-				// -> must scanbackfrom newlineindex
-				// data.findPrevious('\n').startingFromIndex(newLineIndex-1)
-				// fmt.Println(bytes.LastIndex([]byte("go gopher"), []byte("go")))
 				prevLineIndex := getPreviousLineIndex(&data, newLineIndex-1)
 				if !beginsWithHash(string(data[prevLineIndex : k+i])) {
 					return newLineIndex, dropCR(data[0 : newLineIndex-1]), nil

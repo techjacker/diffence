@@ -25,27 +25,28 @@ type DiffItem struct {
 
 // Diff is a list of split diffs
 type Diff struct {
-	ignorer Matcher
-	Items   []DiffItem
-	Error   error
+	ignorer         Matcher
+	Items           []DiffItem
+	Error           error
+	commitHeaderTmp string
 }
 
 // Push a diff on to the list
 func (d *Diff) Push(s string) {
 
-	// var commitHeader, diffBody string
 	var commitHeader string
 
 	if beginsWithHash(s) {
 		commitHeader, s = split(s, "\n")
-		// commitHeader, diffBody = split(s, "\n")
+		d.commitHeaderTmp = commitHeader
 	}
-	// println("------------")
-	// println("\ncommitHeader", commitHeader)
-	// println("\ndiffBody", diffBody)
+	// add commitHeader to diffs within each diff which do not
+	// have the commitHeader on the line directly above them
+	if d.commitHeaderTmp != "" && commitHeader == "" {
+		commitHeader = d.commitHeaderTmp
+	}
 
 	fPath, err := extractFilePath(s)
-	// fPath, err := extractFilePath(diffBody)
 	if err != nil {
 		d.Error = err
 		return
@@ -56,7 +57,6 @@ func (d *Diff) Push(s string) {
 	}
 
 	d.Items = append(d.Items, DiffItem{
-		// raw: diffBody,
 		raw:    s,
 		fPath:  fPath,
 		commit: commitHeader,
