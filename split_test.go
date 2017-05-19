@@ -62,21 +62,48 @@ func TestSplitDiffs(t *testing.T) {
 				{fPath: "web/src/main/resources/templates/layout.vm"},
 			},
 		},
-		// {
-		// 	name: "SplitDiffs()",
-		// 	args: args{r: getFixtureFile("test/fixtures/diffs/logp.truncated.diff")},
-		// 	want: []DiffItem{
-		// 		{fPath: "README.md"},
-		// 		{fPath: "TODO.md"},
-		// 		{fPath: "check.go"},
-		// 		{fPath: "results.go"},
-		// 	},
-		// },
-		// {
-		// 	name: "SplitDiffs()",
-		// 	args: args{r: getFixtureFile("test/fixtures/diffs/logp.diff")},
-		// 	want: generateWantDiffFromFiles("test/fixtures/diffs/expected/logp.diff.filepaths.txt"),
-		// },
+		{
+			name: "SplitDiffs()",
+			args: args{r: getFixtureFile("test/fixtures/diffs/logp.diff")},
+			want: []DiffItem{
+				{
+					fPath:  "README.md",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+				},
+				{
+					fPath:  "TODO.md",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+				},
+				{
+					fPath:  "check.go",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+				},
+				{
+					fPath:  "results.go",
+					commit: "6f41b9b0a8150e165cd297ae3e00129766cf8a9b Splits Results into separate file",
+				},
+				{
+					fPath:  "LICENSE",
+					commit: "50bf1cdde42823e11e78a1026e3a7cfc7bc78e2f Adds MIT License",
+				},
+				{
+					fPath:  ".realize/realize.yaml",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+				},
+				{
+					fPath:  "TODO.md",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+				},
+				{
+					fPath:  "check.go",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+				},
+				{
+					fPath:  "check_test.go",
+					commit: "bf0a0c7499036872255fb6591ad57557d7ec375a Exports Rule struct",
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -89,9 +116,6 @@ func TestSplitDiffs(t *testing.T) {
 
 			equals(t, len(tt.want), len(d.Items))
 			for i, w := range tt.want {
-				// fmt.Printf("%v\n", di)
-				// fmt.Printf("%s\n", d.Items[i].fPath)
-				// fmt.Printf("%s\n", w.fPath)
 				equals(t, w.fPath, d.Items[i].fPath)
 				equals(t, w.commit, d.Items[i].commit)
 			}
