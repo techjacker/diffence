@@ -15,16 +15,24 @@ func TestSplitDiffs(t *testing.T) {
 		args args
 		want []DiffItem
 	}{
-		// {
-		// 	name: "SplitDiffs()",
-		// 	args: args{r: getFixtureFile("test/fixtures/diffs/single_commit_id.diff")},
-		// 	want: []DiffItem{
-		// 		{
-		// 			fPath:  "README.md",
-		// 			commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77 Adds results logger",
-		// 		},
-		// 	},
-		// },
+		{
+			name: "SplitDiffs()",
+			args: args{r: getFixtureFile("test/fixtures/diffs/single_commit_id.diff")},
+			want: []DiffItem{
+				{
+					fPath:  "README.md",
+					commit: "17949087b8e0c9179345e8dbb7b6705b49c93c77 Adds results logger",
+				},
+				{
+					fPath:  "check.go",
+					commit: "7794f2a7e0c35774f531a74280534374075a9c9e Adds Checker and Results",
+				},
+				{
+					fPath:  "check_test.go",
+					commit: "dsfdsf",
+				},
+			},
+		},
 		{
 			name: "SplitDiffs()",
 			args: args{r: getFixtureFile("test/fixtures/diffs/single.diff")},
@@ -78,10 +86,18 @@ func TestSplitDiffs(t *testing.T) {
 				t.Logf("SplitDiffs =%d", len(d.Items))
 				t.Fatalf("SplitDiffs threw error %#v", err)
 			}
-			for i, di := range d.Items {
+
+			// println("len(tt.want)", len(tt.want))
+			// println("len(d.Items)", len(d.Items))
+			equals(t, len(tt.want), len(d.Items))
+
+			// for i, di := range d.Items {
+			for i, w := range tt.want {
 				// fmt.Printf("%v\n", di)
-				equals(t, tt.want[i].fPath, di.fPath)
-				equals(t, tt.want[i].commit, di.commit)
+				// fmt.Printf("%s\n", d.Items[i].fPath)
+				// fmt.Printf("%s\n", w.fPath)
+				equals(t, w.fPath, d.Items[i].fPath)
+				// equals(t, w.commit, d.Items[i].commit)
 			}
 		})
 	}

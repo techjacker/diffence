@@ -6,11 +6,19 @@ const (
 	diffSep = "diff --git a"
 )
 
-func isDiffHeader(data *[]byte, newLineIndex int) bool {
+func isDiffHeader(data *[]byte, index int) bool {
 	diffSepLen := len(diffSep)
-	diffSepEndIndex := newLineIndex + diffSepLen
+	diffSepEndIndex := index + diffSepLen
 	dataLen := len(*data) - 1
-	return diffSepEndIndex < dataLen && string((*data)[newLineIndex:diffSepEndIndex]) == diffSep
+	return diffSepEndIndex < dataLen && string((*data)[index:diffSepEndIndex]) == diffSep
+}
+func getPreviousLineIndex(data *[]byte, index int) int {
+	i := bytes.LastIndex((*data)[0:index], []byte("\n"))
+	// if no previous line then must be on the very first line
+	if i < 0 {
+		return 0
+	}
+	return i
 }
 
 // ScanDiffs splits on the diff of an inidividual file
@@ -38,7 +46,12 @@ func ScanDiffs(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 			if isDiffHeader(&data, newLineIndex) {
 				// if previous line does not begin with a hash then separate on diff headers
-				if !beginsWithHash(string(data[0 : k+i])) {
+				// BUG: cannot use zero starting index
+				// -> must scanbackfrom newlineindex
+				// data.findPrevious('\n').startingFromIndex(newLineIndex-1)
+				// fmt.Println(bytes.LastIndex([]byte("go gopher"), []byte("go")))
+				prevLineIndex := getPreviousLineIndex(&data, newLineIndex-1)
+				if !beginsWithHash(string(data[prevLineIndex : k+i])) {
 					return newLineIndex, dropCR(data[0 : newLineIndex-1]), nil
 				}
 			}
